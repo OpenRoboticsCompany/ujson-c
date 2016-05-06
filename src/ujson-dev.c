@@ -8,12 +8,8 @@
 
 int main(int argc, char* argv[])
 {
-	printf("Running ujson test rig.\n");
+	printf("Running ujson dev rig.\n");
 	
-	char testdata[] = "\0o\101CB";
-	int tdlen = 5;
-	hexdump(testdata, tdlen);
-
 #define BUFLEN 55
 
 	uint8_t buf[BUFLEN];

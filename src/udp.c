@@ -3,6 +3,8 @@
 #include <arpa/inet.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <string.h>
+#include <unistd.h>
 
 #define DEST_IP   "192.168.2.175"
 #define DEST_PORT 7777

@@ -4,10 +4,10 @@
 #include "endian.h"
 #include "ujson.h"
 
-// TODO build this and factor the shit out below
+// TODO factor out below
 void movebytes(uint8_t* to, uint8_t* from, uint16_t n)
 {
-	for ( ; n > 0 ; n-- )
+	while ( n-- )
 		to[n] = from[n];
 }
 
@@ -29,8 +29,7 @@ void render_uint16(uint8_t** nextbuf, uint16_t val)
 {
 	val = htoj16(val);
 	(*nextbuf)[0] = 'W';
-	(*nextbuf)[1] = ((uint8_t*)&val)[0];
-	(*nextbuf)[2] = ((uint8_t*)&val)[1];
+	movebytes( &((*nextbuf)[1]), (uint8_t*)&val, 2 );
 	(*nextbuf) += 3;
 }
 
