@@ -37,18 +37,14 @@ void render_int16(uint8_t** nextbuf, int16_t val)
 {
 	val = htoj16(val);
 	(*nextbuf)[0] = 'w';
-	(*nextbuf)[1] = ((uint8_t*)&val)[0];
-	(*nextbuf)[2] = ((uint8_t*)&val)[1];
+	movebytes( &((*nextbuf)[1]), (uint8_t*)&val, 2 );
 	(*nextbuf) += 3;
 }
 
 void render_uint32(uint8_t** nextbuf, uint32_t val)
 {
 	(*nextbuf)[0] = 'I';
-	(*nextbuf)[1] = ((uint8_t*)&val)[0];
-	(*nextbuf)[2] = ((uint8_t*)&val)[1];
-	(*nextbuf)[3] = ((uint8_t*)&val)[2];
-	(*nextbuf)[4] = ((uint8_t*)&val)[3];
+	movebytes( &((*nextbuf)[1]), (uint8_t*)&val, 4 );
 	(*nextbuf) += 5;
 }
 
@@ -56,10 +52,7 @@ void render_int32(uint8_t** nextbuf, int32_t val)
 {
 	val = htoj32(val);
 	(*nextbuf)[0] = 'i';
-	(*nextbuf)[1] = ((uint8_t*)&val)[0];
-	(*nextbuf)[2] = ((uint8_t*)&val)[1];
-	(*nextbuf)[3] = ((uint8_t*)&val)[2];
-	(*nextbuf)[4] = ((uint8_t*)&val)[3];
+	movebytes( &((*nextbuf)[1]), (uint8_t*)&val, 4 );
 	(*nextbuf) += 5;
 }
 
@@ -67,14 +60,7 @@ void render_uint64(uint8_t** nextbuf, uint64_t val)
 {
 	val = htoj64(val);
 	(*nextbuf)[0] = 'Q';
-	(*nextbuf)[1] = ((uint8_t*)&val)[0];
-	(*nextbuf)[2] = ((uint8_t*)&val)[1];
-	(*nextbuf)[3] = ((uint8_t*)&val)[2];
-	(*nextbuf)[4] = ((uint8_t*)&val)[3];
-	(*nextbuf)[5] = ((uint8_t*)&val)[4];
-	(*nextbuf)[6] = ((uint8_t*)&val)[5];
-	(*nextbuf)[7] = ((uint8_t*)&val)[6];
-	(*nextbuf)[8] = ((uint8_t*)&val)[7];
+	movebytes( &((*nextbuf)[1]), (uint8_t*)&val, 8 );
 	(*nextbuf) += 9;
 }
 
@@ -82,14 +68,7 @@ void render_int64(uint8_t** nextbuf, int64_t val)
 {
 	val = htoj64(val);
 	(*nextbuf)[0] = 'q';
-	(*nextbuf)[1] = ((uint8_t*)&val)[0];
-	(*nextbuf)[2] = ((uint8_t*)&val)[1];
-	(*nextbuf)[3] = ((uint8_t*)&val)[2];
-	(*nextbuf)[4] = ((uint8_t*)&val)[3];
-	(*nextbuf)[5] = ((uint8_t*)&val)[4];
-	(*nextbuf)[6] = ((uint8_t*)&val)[5];
-	(*nextbuf)[7] = ((uint8_t*)&val)[6];
-	(*nextbuf)[8] = ((uint8_t*)&val)[7];
+	movebytes( &((*nextbuf)[1]), (uint8_t*)&val, 8 );
 	(*nextbuf) += 9;
 }
 
@@ -99,9 +78,7 @@ void render_string(uint8_t** nextbuf, char* str)
 	while (str[len++]);
 	len--;
 	(*nextbuf)[0] = 's';
-	uint16_t i = 0;
-	for (i = 0; i < len; i++)
-		(*nextbuf)[3+i] = ((uint8_t*)str)[i];
+	movebytes( &((*nextbuf)[1]), (uint8_t*)str, len );
 	(*nextbuf) += 3 + len;
 	len = htoj16(len);
 	(*nextbuf)[1] = ((uint8_t*)&len)[0];
