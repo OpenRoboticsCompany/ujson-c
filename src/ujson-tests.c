@@ -1,3 +1,36 @@
+/*
+ * Copyright (c) 2016 Aaron Kondziela <aaron@aaronkondziela.com> 
+ *
+ * This file is part of ujson-c
+ *
+ * ujson-c is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * ujson-c is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+ 
+ /*
+  * Part of ujson-c - Implements microjson in C - see ujson.org
+  * and https://github.com/aaronkondziela/ujson-c/
+  *
+  * ujson-tests.c
+  *
+  * Runs a basic set of tests, use via "make tests"
+  * If running on embedded, you may want to redefine the output mechanism
+  * in the print func below, and the assert call, depending on what
+  * resources are available to you.
+  *
+  */
+
 #include <stdio.h>
 #include <stdint.h>
 #ifdef NDEBUG
@@ -115,6 +148,8 @@ int main(int ARGC, char* ARGV[])
 	bot = (uint8_t*)"w\x80\x01";
 	render_int16(&nextbuf, (uint16_t)0x8001);
 	assert( buffers_match(but, bot, 3) );
+
+	// TODO: more tests!
 
 	print("Tests for ujson-c complete - PASS\n");
 	return(0);
