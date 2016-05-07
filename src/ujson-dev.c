@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
 	uint8_t* nextbuf;
 	nextbuf = buf;
 
-	char string[] = "ABCDEFG oh my god it's full of stars";
+	char string[] = "my god, it's full of strings!";
 	printf("buffer before:\n");
 	hexdump(buf, BUFLEN);
 	printf("buffer after:\n");

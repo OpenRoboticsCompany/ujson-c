@@ -33,6 +33,7 @@
 
 #include <stdio.h>
 #include <stdint.h>
+
 #ifdef NDEBUG
 #undef NDEBUG
 #endif
@@ -149,6 +150,16 @@ int main(int ARGC, char* ARGV[])
 	render_int16(&nextbuf, (uint16_t)0x8001);
 	assert( buffers_match(but, bot, 3) );
 
+	print("render_string()\n");
+	zero(but, BUFFER_LENGTH);
+	nextbuf = but;
+	#define TEST_STRING "my god, it's full of strings!"
+	#define TEST_STRING_LEN 32
+	bot = (uint8_t*)("s\x00\x1D" TEST_STRING);
+	render_string(&nextbuf, (uint8_t*)TEST_STRING);
+	assert( buffers_match(but, bot, TEST_STRING_LEN) );
+	#undef TEST_STRING
+	#undef TEST_STRING_LEN
 	// TODO: more tests!
 
 	print("Tests for ujson-c complete - PASS\n");

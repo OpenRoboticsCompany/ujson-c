@@ -33,7 +33,6 @@
 #include "endian.h"
 #include "ujson.h"
 
-// TODO factor out below
 void movebytes(uint8_t* to, uint8_t* from, uint16_t n)
 {
 	while ( n-- )
@@ -103,15 +102,16 @@ void render_int64(uint8_t** nextbuf, int64_t val)
 
 void render_string(uint8_t** nextbuf, char* str)
 {
-	uint16_t len = 0;
+	uint16_t len = 0, len2 = 0;
 	while (str[len++]);
 	len--;
+	len2 = len;
 	(*nextbuf)[0] = 's';
-	movebytes( &((*nextbuf)[1]), (uint8_t*)str, len );
-	(*nextbuf) += 3 + len;
+	movebytes( &((*nextbuf)[3]), (uint8_t*)str, len );
 	len = htoj16(len);
 	(*nextbuf)[1] = ((uint8_t*)&len)[0];
 	(*nextbuf)[2] = ((uint8_t*)&len)[1];
+	(*nextbuf) += 3 + len2;
 }
 
 void render_float(uint8_t** nextbuf, float val)
