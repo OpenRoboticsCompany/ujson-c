@@ -58,6 +58,7 @@ void xmit(uint8_t* buf, uint16_t len)
 	addr.sin_port = htons(DEST_PORT);
 	addr.sin_addr.s_addr = inet_addr(DEST_IP);
 	s = socket(AF_INET, SOCK_DGRAM, 0);
-	sendto(s, buf, len, 0, &addr, sizeof(addr));
+	sendto(s, buf, len, 0, (const struct sockaddr *)&addr, sizeof(addr));
 	close(s);
 }
+
