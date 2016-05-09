@@ -8,7 +8,7 @@ _DEPS=ujson.h hexdump.h endian.h udp.h
 IDIR=inc
 DEPS=$(pasubst %,$(IDIR)/%,$(_DEPS))
 
-_SOURCES=ujson.c hexdump.c udp.c
+_SOURCES=ujson.c hexdump.c udp.c endian.c
 SDIR=src
 SOURCES=$(patsubst %,$(SDIR)/%,$(_SOURCES))
 EXESRC=$(patsubst %,$(SDIR)/%,$(_EXESRC))
