@@ -4,7 +4,7 @@ _EXESRC=ujson-dev.c
 TESTS=ujson-tests
 _TESTSSRC=ujson-tests.c
 
-_DEPS=ujson-render.h hexdump.h endian.h udp.h
+_DEPS=ujson-render.h hexdump.h endian.h udp.h schematags.h
 IDIR=inc
 DEPS=$(pasubst %,$(IDIR)/%,$(_DEPS))
 
