@@ -94,6 +94,27 @@ int main(int ARGC, char* ARGV[])
 	// Buffer of Truth
 	uint8_t* bot;
 
+	print("render_bool() for true\n");
+	zero(but, BUFFER_LENGTH);
+	nextbuf = but;
+	bot = (uint8_t*)"t";
+	render_bool(&nextbuf, 1);
+	assert( buffers_match(but, bot, 1) );
+
+	print("render_bool() for false\n");
+	zero(but, BUFFER_LENGTH);
+	nextbuf = but;
+	bot = (uint8_t*)"f";
+	render_bool(&nextbuf, 0);
+	assert( buffers_match(but, bot, 1) );
+
+	print("render_null()\n");
+	zero(but, BUFFER_LENGTH);
+	nextbuf = but;
+	bot = (uint8_t*)"n";
+	render_null(&nextbuf);
+	assert( buffers_match(but, bot, 1) );
+
 	print("render_uint8() for 0x7B (123)\n");
 	zero(but, BUFFER_LENGTH);
 	nextbuf = but;

@@ -27,6 +27,8 @@
   *
   */
 
+void render_bool(uint8_t** nextbuf, uint8_t val);
+void render_null(uint8_t** nextbuf);
 void render_uint8(uint8_t** nextbuf, uint8_t val);
 void render_int8(uint8_t** nextbuf, uint8_t val);
 void render_uint16(uint8_t** nextbuf, uint16_t val);

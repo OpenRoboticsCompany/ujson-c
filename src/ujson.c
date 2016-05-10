@@ -34,10 +34,21 @@
 #include "endian.h"
 #include "ujson.h"
 
-void movebytes(uint8_t* to, uint8_t* from, uint16_t n)
+static void movebytes(uint8_t* to, uint8_t* from, uint16_t n)
 {
-	while ( n-- )
-		to[n] = from[n];
+	while ( n-- ) to[n] = from[n];
+}
+
+void render_bool(uint8_t** nextbuf, uint8_t val)
+{
+	(*nextbuf)[0] = val ? (uint8_t)'t' : (uint8_t)'f';
+	(*nextbuf) += 1;
+}
+
+void render_null(uint8_t** nextbuf)
+{
+	(*nextbuf)[0] = (uint8_t)'n';
+	(*nextbuf) += 1;
 }
 
 void render_uint8(uint8_t** nextbuf, uint8_t val)
