@@ -1,13 +1,21 @@
+# TODO: get header deps working
+# TODO: move bins to a bin dir, add to gitignore
+# TODO: library build?
+
+# Only used during development, will be removed
 EXE=ujson-dev
 _EXESRC=ujson-dev.c
 
+# Created and run by make tests
 TESTS=ujson-tests
 _TESTSSRC=ujson-tests.c
 
+# Header file dependencies
 _DEPS=ujson-render.h hexdump.h endian.h udp.h schematags.h
 IDIR=inc
 DEPS=$(pasubst %,$(IDIR)/%,$(_DEPS))
 
+# List of source files, excluding the EXE and TESTS runnables above
 _SOURCES=ujson-render.c hexdump.c udp.c endian.c
 SDIR=src
 SOURCES=$(patsubst %,$(SDIR)/%,$(_SOURCES))
@@ -24,6 +32,7 @@ CC=gcc
 CFLAGS=-g -Wall -I$(IDIR) -std=c99 -c
 LDFLAGS=
 
+# TODO During dev this builds and runs the dev exe for the default make cmd
 all: $(SOURCES) $(EXESRC) $(EXE) runit
 
 runit:
