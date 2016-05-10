@@ -85,6 +85,11 @@ int main(int ARGC, char* ARGV[])
 	u64b = _swap_64( u64a );
 	assert( u64b == 0x5EBADEC01EAB1153ull );
 
+	print("_swap_fpa_64()\n");
+	u64a = 0x7E57AB1EDEADFA11ull;
+	u64b = _swap_fpa_64( u64a );
+	assert( u64b == 0xDEADFA117E57AB1Eull );
+
 	print("Testing render_* functions...\n");
 
 	#define BUFFER_LENGTH 64
