@@ -7,7 +7,7 @@ on the microjson protocol, see the [Open Robotics Company ujson git repository](
 
 **PLEASE NOTE**
 
-This is incomplete code; do not use until finalized!
+_This is incomplete code_ - Do not use until finalized!
 
 Copyright & License
 -------------------
