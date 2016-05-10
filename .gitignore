@@ -1,8 +1,13 @@
 # may contain private networking information
 udptarget.h
 
-#vi swp files
+# vi swp files
 .*.swp
+
+# dev cruft
+ujson-dev
+ujson-tests
+banner.txt
 
 # Object files
 *.o
