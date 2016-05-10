@@ -22,13 +22,18 @@
   * Part of ujson-c - Implements microjson in C - see ujson.org
   * and https://github.com/aaronkondziela/ujson-c/
   *
-  * ujson.h
-  * Header for ujson.c (likely to get split out)
+  * ujson-render.h
+  * Header for ujson-render.c, for rendering elements into ujson format
   *
   */
 
+#ifndef _STDINT_H
+	#include <stdint.h>
+#endif
+
 void render_bool(uint8_t** nextbuf, uint8_t val);
 void render_null(uint8_t** nextbuf);
+
 void render_uint8(uint8_t** nextbuf, uint8_t val);
 void render_int8(uint8_t** nextbuf, uint8_t val);
 void render_uint16(uint8_t** nextbuf, uint16_t val);

@@ -22,17 +22,13 @@
   * Part of ujson-c - Implements microjson in C - see ujson.org
   * and https://github.com/aaronkondziela/ujson-c/
   *
-  * ujson.c
-  * Rendering functions, will likely split out to different files
+  * ujson-render.c
+  * Rendering functions - serialize elements into ujson format
   *
   */
 
-#include <stdio.h>
-#include <stdint.h>
-#include "hexdump.h"
-
 #include "endian.h"
-#include "ujson.h"
+#include "ujson-render.h"
 
 static void movebytes(uint8_t* to, uint8_t* from, uint16_t n)
 {

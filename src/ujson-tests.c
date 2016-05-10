@@ -39,7 +39,7 @@
 #endif
 #include <assert.h>
 
-#include "ujson.h"
+#include "ujson-render.h"
 #include "endian.h"
 
 // Change output routine here for serial output on embedded, etc.

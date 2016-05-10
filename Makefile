@@ -4,11 +4,11 @@ _EXESRC=ujson-dev.c
 TESTS=ujson-tests
 _TESTSSRC=ujson-tests.c
 
-_DEPS=ujson.h hexdump.h endian.h udp.h
+_DEPS=ujson-render.h hexdump.h endian.h udp.h
 IDIR=inc
 DEPS=$(pasubst %,$(IDIR)/%,$(_DEPS))
 
-_SOURCES=ujson.c hexdump.c udp.c endian.c
+_SOURCES=ujson-render.c hexdump.c udp.c endian.c
 SDIR=src
 SOURCES=$(patsubst %,$(SDIR)/%,$(_SOURCES))
 EXESRC=$(patsubst %,$(SDIR)/%,$(_EXESRC))

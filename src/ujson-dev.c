@@ -33,7 +33,7 @@
 #include <stdio.h>
 #include <stdint.h>
 
-#include "ujson.h"
+#include "ujson-render.h"
 #include "hexdump.h"
 #include "endian.h"
 #include "udp.h"
