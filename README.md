@@ -3,7 +3,7 @@ ujson-c - microjson C library
 
 This is a C library implementing the microjson protocol, a simple way to send both
 structured and unstructured data to and from microcontrollers. For more information
-on the microjson protocol, see the [Open Robotics Company ujson git repository](https://github.com/OpenRoboticsCompany/ujson) on GitHub.
+on the microjson protocol, see the [Open Robotics Company ujson git repository](https://github.com/OpenRoboticsCompany/ujson) on GitHub, and <http://ujson.org>
 
 **PLEASE NOTE**
 
@@ -30,3 +30,9 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 See LICENSE file.
+
+Other Included Code
+-------------------
+
+This repo contains the hexdump code from one of my other repos, licensed under
+the MIT license. See <https://github.com/aaronkondziela/hexdump>
