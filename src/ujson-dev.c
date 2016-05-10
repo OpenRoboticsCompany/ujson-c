@@ -52,11 +52,15 @@ int main(int argc, char* argv[])
 	uint8_t* nextbuf;
 	nextbuf = buf;
 
-	char string[] = "my god, it's full of strings!";
+	float ff = 123.456f;
+	double dd = 789.654f;
+
 	printf("buffer before:\n");
 	hexdump(buf, BUFLEN);
+
+	render_double(&nextbuf, dd);
+
 	printf("buffer after:\n");
-	render_string(&nextbuf, string);
 	hexdump(buf, BUFLEN);
 	printf("buffer pointers:\n");
 	hexdump(&bp, sizeof(bp));
@@ -68,13 +72,14 @@ int main(int argc, char* argv[])
 
 	printf("sizeof float %d\n", sizeof(float));
 	printf("sizeof double %d\n", sizeof(double));
-	float f = 1.0f;
-	double d = 1.0f;
 
-	printf("float 1.0 hexdump:\n");
-	hexdump(&f, 4);
-	printf("double 1.0 hexdump:\n");
-	hexdump(&d, 8);
+	printf("float %.10f hexdump:\n", ff);
+	hexdump(&ff, 4);
+	printf("double %.10f hexdump:\n", dd);
+	hexdump(&dd, 8);
+	dd = htojd(dd);
+	hexdump(&dd, 8);
+
 #if __FLOAT_WORD_ORDER__ == __ORDER_LITTLE_ENDIAN__
 	printf("float word order little endian\n");
 #else

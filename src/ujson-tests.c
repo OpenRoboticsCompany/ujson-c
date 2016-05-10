@@ -155,11 +155,40 @@ int main(int ARGC, char* ARGV[])
 	nextbuf = but;
 	#define TEST_STRING "my god, it's full of strings!"
 	#define TEST_STRING_LEN 32
-	bot = (uint8_t*)("s\x00\x1D" TEST_STRING);
-	render_string(&nextbuf, (uint8_t*)TEST_STRING);
+	bot = (uint8_t*)"s\x00\x1D" TEST_STRING;
+	render_string(&nextbuf, (char*)TEST_STRING);
 	assert( buffers_match(but, bot, TEST_STRING_LEN) );
-	#undef TEST_STRING
-	#undef TEST_STRING_LEN
+	
+	print("Note: floating-point tests presently are only valid for current build target arch.\n");
+	#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+		print("Byte order is little endian\n");
+	#elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+		print("Byte order is big endian\n");
+	#else
+		#error "Macro __BYTE_ORDER__ has unexpected value or is undefined"
+	#endif
+	#if __FLOAT_WORD_ORDER__ == __ORDER_LITTLE_ENDIAN__
+		print("Float word order is little endian\n");
+	#elif __FLOAT_WORD_ORDER__ == __ORDER_BIG_ENDIAN__
+		print("Float word order is big endian\n");
+	#else
+		#error "Macro __FLOAT_WORD_ORDER__ has unexpected value or is undefined"
+	#endif
+
+	print("render_float() for 12345.6789\n");
+	zero(but, BUFFER_LENGTH);
+	nextbuf = but;
+	bot = (uint8_t*)"d\x46\x40\xe6\xb7";
+	render_float(&nextbuf, (float)12345.6789);
+	assert( buffers_match(but, bot, 5) );
+
+	print("render_double() for 12345.6789\n");
+	zero(but, BUFFER_LENGTH);
+	nextbuf = but;
+	bot = (uint8_t*)"D\x40\xc8\x1c\xd6\xe6\x31\xf8\xa1";
+	render_double(&nextbuf, (double)12345.6789);
+	assert( buffers_match(but, bot, 9) );
+
 	// TODO: more tests!
 
 	print("Tests for ujson-c complete - PASS\n");

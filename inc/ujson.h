@@ -37,3 +37,6 @@ void render_uint64(uint8_t** nextbuf, uint64_t val);
 void render_int64(uint8_t** nextbuf, int64_t val);
 
 void render_string(uint8_t** nextbuf, char* str);
+
+void render_float(uint8_t** nextbuf, float val);
+void render_double(uint8_t** nextbuf, double val);

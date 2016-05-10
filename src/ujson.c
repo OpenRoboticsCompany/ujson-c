@@ -29,6 +29,7 @@
 
 #include <stdio.h>
 #include <stdint.h>
+#include "hexdump.h"
 
 #include "endian.h"
 #include "ujson.h"
@@ -118,14 +119,16 @@ void render_float(uint8_t** nextbuf, float val)
 {
 	val = htojf(val);
 	(*nextbuf)[0] = 'd';
-	// TODO fill this out
+	movebytes( &((*nextbuf)[1]), (uint8_t*)&val, 4 );
+	(*nextbuf) += 5;
 }
 
 void render_double(uint8_t** nextbuf, double val)
 {
 	val = htojd(val);
 	(*nextbuf)[0] = 'D';
-	// TODO fill this out
+	movebytes( &((*nextbuf)[1]), (uint8_t*)&val, 8 );
+	(*nextbuf) += 9;
 }
 
 
