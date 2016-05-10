@@ -1,6 +1,9 @@
 # may contain private networking information
 udptarget.h
 
+#vi swp files
+.*.swp
+
 # Object files
 *.o
 *.ko
