@@ -24,6 +24,7 @@
   *
   * ujson-render.h
   * Header for ujson-render.c, for rendering elements into ujson format
+  * with inline schema tags
   *
   */
 
