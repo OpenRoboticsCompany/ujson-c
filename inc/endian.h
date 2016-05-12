@@ -91,8 +91,10 @@ uint64_t _bytewise_double_to_uint64(double d);
 	#define _swap_word_endians(x) ((x))
 #elif __FLOAT_WORD_ORDER == __ORDER_BIG_ENDIAN__
 	#define _swap_word_endians(x) (_swap_fpa_64((x)))
-#else
-	#error "Macro __FLOAT_WORD_ORDER__ has unexpected value or is undefined"
+#elif !defined(__FLOAT_WORD_ORDER)
+	// Assume not hybrid
+	#warn "Macro __FLOAT_WORD_ORDER__ not defined, assuming non-hybrid"
+	#define _swap_word_endians(x) ((x))
 #endif
 
 // Only big-endian word order on little-endian byte order ARM FPA needs special handling
