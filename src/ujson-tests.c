@@ -197,8 +197,8 @@ int main(int ARGC, char* ARGV[])
 		print("Float word order is little endian\n");
 	#elif __FLOAT_WORD_ORDER__ == __ORDER_BIG_ENDIAN__
 		print("Float word order is big endian\n");
-	#else
-		#error "Macro __FLOAT_WORD_ORDER__ has unexpected value or is undefined"
+	#elif !defined(__FLOAT_WORD_ORDER__)
+		#warning "Macro __FLOAT_WORD_ORDER__ undefined, assuming non-mixed"
 	#endif
 
 	print("render_float() for 12345.6789\n");
