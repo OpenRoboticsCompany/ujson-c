@@ -93,7 +93,7 @@ uint64_t _bytewise_double_to_uint64(double d);
 	#define _swap_word_endians(x) (_swap_fpa_64((x)))
 #elif !defined(__FLOAT_WORD_ORDER)
 	// Assume not hybrid
-	#warn "Macro __FLOAT_WORD_ORDER__ not defined, assuming non-hybrid"
+	#warning "Macro __FLOAT_WORD_ORDER__ not defined, assuming non-hybrid"
 	#define _swap_word_endians(x) ((x))
 #endif
 
