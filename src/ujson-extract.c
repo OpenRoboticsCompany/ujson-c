@@ -39,93 +39,86 @@ static void movebytes(uint8_t* to, uint8_t* from, uint16_t n)
 
 // TODO: all these extract_foo need attention, just copypasta from render as notes to self
 
-void extract_bool(uint8_t** nextbuf, uint8_t val)
+// you'll probably never use these bool and null extracts; included for structural symmetry
+// perhaps to be removed later.
+void extract_bool_true(uint8_t** nextbuf, uint8_t* val)
 {
-	(*nextbuf)[0] = val ? (uint8_t)'t' : (uint8_t)'f';
+	*val = 1; 
+}
+
+void extract_bool_false(uint8_t** nextbuf, uint8_t* val)
+{
+	*val = 0; 
+}
+
+void extract_null(uint8_t** nextbuf, uint8_t* val)
+{
+	*val = 0;
+}
+
+void extract_uint8(uint8_t** nextbuf, uint8_t* val)
+{
+	*val = (uint8_t)(**nextbuf);
 	(*nextbuf) += 1;
 }
 
-void extract_null(uint8_t** nextbuf)
+void extract_int8(uint8_t** nextbuf, int8_t* val)
 {
-	(*nextbuf)[0] = (uint8_t)'n';
+	*val = (int8_t)(**nextbuf);
 	(*nextbuf) += 1;
 }
 
-void extract_uint8(uint8_t** nextbuf, uint8_t val)
+void extract_uint16(uint8_t** nextbuf, uint16_t* val)
 {
-	(*nextbuf)[0] = 'C';
-	(*nextbuf)[1] = val;
+	movebytes( (uint8_t*)val, *nextbuf, 2 );
+	*val = htoj16(*val);
 	(*nextbuf) += 2;
 }
 
-void extract_int8(uint8_t** nextbuf, uint8_t val)
+void extract_int16(uint8_t** nextbuf, int16_t* val)
 {
-	(*nextbuf)[0] = 'c';
-	(*nextbuf)[1] = val;
+	movebytes( (uint8_t*)val, *nextbuf, 2 );
+	*val = htoj16(*val);
 	(*nextbuf) += 2;
 }
 
-void extract_uint16(uint8_t** nextbuf, uint16_t val)
+void extract_uint32(uint8_t** nextbuf, uint32_t* val)
 {
-	val = htoj16(val);
-	(*nextbuf)[0] = 'W';
-	movebytes( &((*nextbuf)[1]), (uint8_t*)&val, 2 );
-	(*nextbuf) += 3;
+	movebytes( (uint8_t*)val, *nextbuf, 4 );
+	*val = htoj32(*val);
+	(*nextbuf) += 4;
 }
 
-void extract_int16(uint8_t** nextbuf, int16_t val)
+void extract_int32(uint8_t** nextbuf, int32_t* val)
 {
-	val = htoj16(val);
-	(*nextbuf)[0] = 'w';
-	movebytes( &((*nextbuf)[1]), (uint8_t*)&val, 2 );
-	(*nextbuf) += 3;
+	movebytes( (uint8_t*)val, *nextbuf, 4 );
+	*val = htoj32(*val);
+	(*nextbuf) += 4;
 }
 
-void extract_uint32(uint8_t** nextbuf, uint32_t val)
+void extract_uint64(uint8_t** nextbuf, uint64_t* val)
 {
-	(*nextbuf)[0] = 'I';
-	movebytes( &((*nextbuf)[1]), (uint8_t*)&val, 4 );
-	(*nextbuf) += 5;
+	movebytes( (uint8_t*)val, *nextbuf, 8 );
+	*val = htoj64(*val);
+	(*nextbuf) += 8;
 }
 
-void extract_int32(uint8_t** nextbuf, int32_t val)
+void extract_int64(uint8_t** nextbuf, int64_t* val)
 {
-	val = htoj32(val);
-	(*nextbuf)[0] = 'i';
-	movebytes( &((*nextbuf)[1]), (uint8_t*)&val, 4 );
-	(*nextbuf) += 5;
-}
-
-void extract_uint64(uint8_t** nextbuf, uint64_t val)
-{
-	val = htoj64(val);
-	(*nextbuf)[0] = 'Q';
-	movebytes( &((*nextbuf)[1]), (uint8_t*)&val, 8 );
-	(*nextbuf) += 9;
-}
-
-void extract_int64(uint8_t** nextbuf, int64_t val)
-{
-	val = htoj64(val);
-	(*nextbuf)[0] = 'q';
-	movebytes( &((*nextbuf)[1]), (uint8_t*)&val, 8 );
-	(*nextbuf) += 9;
+	movebytes( (uint8_t*)val, *nextbuf, 8 );
+	*val = htoj64(*val);
+	(*nextbuf) += 8;
 }
 
 void extract_string(uint8_t** nextbuf, char* str)
 {
-	uint16_t len = 0, len2 = 0;
-	while (str[len++]);
-	len--;
-	len2 = len;
-	(*nextbuf)[0] = 's';
-	movebytes( &((*nextbuf)[3]), (uint8_t*)str, len );
-	len = htoj16(len);
-	(*nextbuf)[1] = ((uint8_t*)&len)[0];
-	(*nextbuf)[2] = ((uint8_t*)&len)[1];
-	(*nextbuf) += 3 + len2;
+	uint16_t len = 0;
+	extract_uint16(nextbuf, &len);
+	movebytes(str, *nextbuf, len);
+	str[len] = '\0';
+	(*nextbuf) += len;
 }
-
+/*
 void extract_float(uint8_t** nextbuf, float val)
 {
 	val = htojf(val);
@@ -141,6 +134,8 @@ void extract_double(uint8_t** nextbuf, double val)
 	movebytes( &((*nextbuf)[1]), (uint8_t*)&val, 8 );
 	(*nextbuf) += 9;
 }
+*/
+
 
 /*
 void parse(uint8_t* destbuf, uint16_t destsize, uint8_t** srcbuf, uint16_t srclen)

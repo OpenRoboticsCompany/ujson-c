@@ -252,6 +252,8 @@ int main(int ARGC, char* ARGV[])
 	bot = (uint8_t*)"s\x00\x1D" TEST_STRING;
 	render_string(&nextbuf, (char*)TEST_STRING);
 	assert( buffers_match(but, bot, TEST_STRING_LEN) );
+	#undef TEST_STRING
+	#undef TEST_STRING_LEN
 	
 	print("Note: floating-point tests presently are only valid for current build target arch.\n");
 	#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
@@ -287,7 +289,31 @@ int main(int ARGC, char* ARGV[])
 
 	print("Testing extract_* functions...\n");
 
-	print("extract_uint8\n");
+	print("extract_bool_true()\n");
+	bot = (uint8_t*)"t\xAA\xAA";
+	nextbuf = bot + 1;
+	u8a = 1;
+	u8b = 0;
+	extract_bool_true(&nextbuf, &u8b);
+	assert( u8a == u8b );
+
+	print("extract_bool_false()\n");
+	bot = (uint8_t*)"f\xAA\xAA";
+	nextbuf = bot + 1;
+	u8a = 0;
+	u8b = 1;
+	extract_bool_false(&nextbuf, &u8b);
+	assert( u8a == u8b );
+
+	print("extract_uint8() for 0x7f\n");
+	bot = (uint8_t*)"C\x7f\xAA";
+	nextbuf = bot + 1;
+	u8a = 0x7f;
+	u8b = 0;
+	extract_uint8(&nextbuf, &u8b);
+	assert( u8a == u8b );
+
+	print("extract_uint8 for 0x80\n");
 	bot = (uint8_t*)"C\x80\xAA";
 	nextbuf = bot + 1;
 	u8a = 0x80;
@@ -295,12 +321,133 @@ int main(int ARGC, char* ARGV[])
 	extract_uint8(&nextbuf, &u8b);
 	assert( u8a == u8b );
 
-	print("extract_int8()\n");
-	bot = (uint8_t*)"c\x80\xAA";
+	print("extract_int8() for 0x7f\n");
+	bot = (uint8_t*)"c\x7f\xAA";
 	nextbuf = bot + 1;
 	i8a = 0x7f;
-	u8b = 0;
-	//TODO finish this, expand around the high bit for both this and previous
+	i8b = 0;
+	extract_int8(&nextbuf, &i8b);
+	assert( i8a == i8b );
+
+	print("extract_int8() for 0x80\n");
+	bot = (uint8_t*)"c\x80\xAA";
+	nextbuf = bot + 1;
+	i8a = 0x80;
+	i8b = 0;
+	extract_int8(&nextbuf, &i8b);
+	assert( i8a == i8b );
+
+	print("extract_uint16() for 0x7fff\n");
+	bot = (uint8_t*)"W\x7f\xff\xAA";
+	nextbuf = bot + 1;
+	u16a = 0x7fff;
+	u16b = 0;
+	extract_uint16(&nextbuf, &u16b);
+	assert( u16a == u16b );
+
+	print("extract_uint16() for 0x8001\n");
+	bot = (uint8_t*)"W\x80\x01\xAA";
+	nextbuf = bot + 1;
+	u16a = 0x8001;
+	u16b = 0;
+	extract_uint16(&nextbuf, &u16b);
+	assert( u16a == u16b );
+
+	print("extract_int16() for 0x7fff\n");
+	bot = (uint8_t*)"w\x7f\xff\xAA";
+	nextbuf = bot + 1;
+	i16a = 0x7fff;
+	i16b = 0;
+	extract_int16(&nextbuf, &i16b);
+	assert( i16a == i16b );
+
+	print("extract_int16() for 0x8001\n");
+	bot = (uint8_t*)"w\x80\x01\xAA";
+	nextbuf = bot + 1;
+	i16a = 0x8001;
+	i16b = 0;
+	extract_int16(&nextbuf, &i16b);
+	assert( i16a == i16b );
+
+
+	print("extract_uint32() for 0x7fffffff\n");
+	bot = (uint8_t*)"I\x7f\xff\xff\xff\xAA";
+	nextbuf = bot + 1;
+	u32a = 0x7fffffff;
+	u32b = 0;
+	extract_uint32(&nextbuf, &u32b);
+	assert( u32a == u32b );
+
+	print("extract_uint32() for 0x80000001\n");
+	bot = (uint8_t*)"I\x80\x00\x00\x01\xAA";
+	nextbuf = bot + 1;
+	u32a = 0x80000001;
+	u32b = 0;
+	extract_uint32(&nextbuf, &u32b);
+	assert( u32a == u32b );
+
+	print("extract_int32() for 0x7fffffff\n");
+	bot = (uint8_t*)"i\x7f\xff\xff\xff\xAA";
+	nextbuf = bot + 1;
+	i32a = 0x7fffffff;
+	i32b = 0;
+	extract_int32(&nextbuf, &i32b);
+	assert( i32a == i32b );
+
+	print("extract_int32() for 0x80000001\n");
+	bot = (uint8_t*)"i\x80\x00\x00\x01\xAA";
+	nextbuf = bot + 1;
+	i32a = 0x80000001;
+	i32b = 0;
+	extract_int32(&nextbuf, &i32b);
+	assert( i32a == i32b );
+
+	
+	print("extract_uint64() for 0x7fffffffffffffff\n");
+	bot = (uint8_t*)"I\x7f\xff\xff\xff\xff\xff\xff\xff\xAA";
+	nextbuf = bot + 1;
+	u64a = 0x7fffffffffffffff;
+	u64b = 0;
+	extract_uint64(&nextbuf, &u64b);
+	assert( u64a == u64b );
+
+	print("extract_uint64() for 0x8000000000000001\n");
+	bot = (uint8_t*)"I\x80\x00\x00\x00\x00\x00\x00\x01\xAA";
+	nextbuf = bot + 1;
+	u64a = 0x8000000000000001;
+	u64b = 0;
+	extract_uint64(&nextbuf, &u64b);
+	assert( u64a == u64b );
+
+	print("extract_int64() for 0x7fffffffffffffff\n");
+	bot = (uint8_t*)"i\x7f\xff\xff\xff\xff\xff\xff\xff\xAA";
+	nextbuf = bot + 1;
+	i64a = 0x7fffffffffffffff;
+	i64b = 0;
+	extract_int64(&nextbuf, &i64b);
+	assert( i64a == i64b );
+
+	print("extract_int64() for 0x8000000000000001\n");
+	bot = (uint8_t*)"i\x80\x00\x00\x00\x00\x00\x00\x01\xAA";
+	nextbuf = bot + 1;
+	i64a = 0x8000000000000001;
+	i64b = 0;
+	extract_int64(&nextbuf, &i64b);
+	assert( i64a == i64b );
+
+	print("extract_string()\n");
+	zero(but, BUFFER_LENGTH);
+	#define TEST_STRING "my god, it's full of strings!"
+	#define TEST_STRING_LEN 29
+	bot = (uint8_t*)"\x00\x1D" TEST_STRING;
+	nextbuf = bot;
+	but[TEST_STRING_LEN+1] = '\xAA';
+	extract_string(&nextbuf, (char*)but);
+	assert( buffers_match(but, TEST_STRING, TEST_STRING_LEN) );
+	// check if writing past the end...
+	assert( but[TEST_STRING_LEN+1] == '\xAA' );
+	#undef TEST_STRING
+	#undef TEST_STRING_LEN
 
 	// TODO: more tests!
 
