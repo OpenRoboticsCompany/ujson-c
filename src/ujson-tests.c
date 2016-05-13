@@ -40,6 +40,7 @@
 #include <assert.h>
 
 #include "ujson-render.h"
+#include "ujson-extract.h"
 #include "endian.h"
 
 // Change output routine here for serial output on embedded, etc.
@@ -63,9 +64,25 @@ int main(int ARGC, char* ARGV[])
 {
 	print("Running ujson-c tests...\n");
 
+	uint8_t u8a, u8b;
+	int8_t i8a, i8b;
 	uint16_t u16a, u16b;
+	int16_t i16a, i16b;
 	uint32_t u32a, u32b;
+	int32_t i32a, i32b;
 	uint64_t u64a, u64b;
+	int64_t i64a, i64b;
+	float fa, fb;
+	double da, db;
+
+	#define BUFFER_LENGTH 64
+	// Buffer Under Test
+	uint8_t but[BUFFER_LENGTH];
+	uint8_t* nextbuf;
+	// Buffer of Truth
+	uint8_t* bot;
+
+	/*********************** endian conversion tests *******/
 
 	print("Testing endian conversions...\n");
 
@@ -85,19 +102,14 @@ int main(int ARGC, char* ARGV[])
 	u64b = _swap_64( u64a );
 	assert( u64b == 0x5EBADEC01EAB1153ull );
 
-	print("_swap_fpa_64()\n");
+	print("_swap_fpa_64() (only valid for current arch floating-point system)\n");
 	u64a = 0x7E57AB1EDEADFA11ull;
 	u64b = _swap_fpa_64( u64a );
 	assert( u64b == 0xDEADFA117E57AB1Eull );
 
-	print("Testing render_* functions...\n");
+	/************************ ujson-render tests ***************/
 
-	#define BUFFER_LENGTH 64
-	// Buffer Under Test
-	uint8_t but[BUFFER_LENGTH];
-	uint8_t* nextbuf;
-	// Buffer of Truth
-	uint8_t* bot;
+	print("Testing render_* functions...\n");
 
 	print("render_bool() for true\n");
 	zero(but, BUFFER_LENGTH);
@@ -176,6 +188,62 @@ int main(int ARGC, char* ARGV[])
 	render_int16(&nextbuf, (uint16_t)0x8001);
 	assert( buffers_match(but, bot, 3) );
 
+	printf("render_uint32() for 0x7fffffff\n");
+	zero(but, BUFFER_LENGTH);
+	nextbuf = but;
+	bot = (uint8_t*)"I\x7f\xff\xff\xff";
+	render_uint32(&nextbuf, (uint32_t)0x7fffffff);
+	assert( buffers_match(but, bot, 5) );
+
+	printf("render_uint32() for 0x80000001\n");
+	zero(but, BUFFER_LENGTH);
+	nextbuf = but;
+	bot = (uint8_t*)"I\x80\x00\x00\x01";
+	render_uint32(&nextbuf, (uint32_t)0x80000001);
+	assert( buffers_match(but, bot, 5) );
+
+	printf("render_int32() for 0x7fffffff\n");
+	zero(but, BUFFER_LENGTH);
+	nextbuf = but;
+	bot = (uint8_t*)"i\x7f\xff\xff\xff";
+	render_int32(&nextbuf, (int32_t)0x7fffffff);
+	assert( buffers_match(but, bot, 5) );
+
+	printf("render_int32() for 0x80000001\n");
+	zero(but, BUFFER_LENGTH);
+	nextbuf = but;
+	bot = (uint8_t*)"i\x80\x00\x00\x01";
+	render_int32(&nextbuf, (int32_t)0x80000001);
+	assert( buffers_match(but, bot, 5) );
+
+	printf("render_uint64() for 0x7fffffffffffffff\n");
+	zero(but, BUFFER_LENGTH);
+	nextbuf = but;
+	bot = (uint8_t*)"Q\x7f\xff\xff\xff\xff\xff\xff\xff";
+	render_uint64(&nextbuf, (uint64_t)0x7fffffffffffffff);
+	assert( buffers_match(but, bot, 9) );
+
+	printf("render_uint64() for 0x8000000000000001\n");
+	zero(but, BUFFER_LENGTH);
+	nextbuf = but;
+	bot = (uint8_t*)"Q\x80\x00\x00\x00\x00\x00\x00\x01";
+	render_uint64(&nextbuf, (uint64_t)0x8000000000000001);
+	assert( buffers_match(but, bot, 9) );
+
+	printf("render_int64() for 0x7fffffffffffffff\n");
+	zero(but, BUFFER_LENGTH);
+	nextbuf = but;
+	bot = (uint8_t*)"q\x7f\xff\xff\xff\xff\xff\xff\xff";
+	render_int64(&nextbuf, (int64_t)0x7fffffffffffffff);
+	assert( buffers_match(but, bot, 9) );
+
+	printf("render_int64() for 0x8000000000000001\n");
+	zero(but, BUFFER_LENGTH);
+	nextbuf = but;
+	bot = (uint8_t*)"q\x80\x00\x00\x00\x00\x00\x00\x01";
+	render_int64(&nextbuf, (int64_t)0x8000000000000001);
+	assert( buffers_match(but, bot, 9) );
+
 	print("render_string()\n");
 	zero(but, BUFFER_LENGTH);
 	nextbuf = but;
@@ -214,6 +282,25 @@ int main(int ARGC, char* ARGV[])
 	bot = (uint8_t*)"D\x40\xc8\x1c\xd6\xe6\x31\xf8\xa1";
 	render_double(&nextbuf, (double)12345.6789);
 	assert( buffers_match(but, bot, 9) );
+
+	/******************* ujson-extract tests ****************/
+
+	print("Testing extract_* functions...\n");
+
+	print("extract_uint8\n");
+	bot = (uint8_t*)"C\x80\xAA";
+	nextbuf = bot + 1;
+	u8a = 0x80;
+	u8b = 0;
+	extract_uint8(&nextbuf, &u8b);
+	assert( u8a == u8b );
+
+	print("extract_int8()\n");
+	bot = (uint8_t*)"c\x80\xAA";
+	nextbuf = bot + 1;
+	i8a = 0x7f;
+	u8b = 0;
+	//TODO finish this, expand around the high bit for both this and previous
 
 	// TODO: more tests!
 

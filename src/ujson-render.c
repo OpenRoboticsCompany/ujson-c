@@ -79,6 +79,7 @@ void render_int16(uint8_t** nextbuf, int16_t val)
 
 void render_uint32(uint8_t** nextbuf, uint32_t val)
 {
+	val = htoj32(val);
 	(*nextbuf)[0] = 'I';
 	movebytes( &((*nextbuf)[1]), (uint8_t*)&val, 4 );
 	(*nextbuf) += 5;
