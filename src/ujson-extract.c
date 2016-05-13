@@ -118,24 +118,20 @@ void extract_string(uint8_t** nextbuf, char* str)
 	str[len] = '\0';
 	(*nextbuf) += len;
 }
-/*
-void extract_float(uint8_t** nextbuf, float val)
+
+void extract_float(uint8_t** nextbuf, float* val)
 {
-	val = htojf(val);
-	(*nextbuf)[0] = 'd';
-	movebytes( &((*nextbuf)[1]), (uint8_t*)&val, 4 );
-	(*nextbuf) += 5;
+	movebytes( (uint8_t*)val, *nextbuf, 4 );
+	*val = htojf(*val);
+	(*nextbuf) += 4;
 }
 
-void extract_double(uint8_t** nextbuf, double val)
+void extract_double(uint8_t** nextbuf, double* val)
 {
-	val = htojd(val);
-	(*nextbuf)[0] = 'D';
-	movebytes( &((*nextbuf)[1]), (uint8_t*)&val, 8 );
-	(*nextbuf) += 9;
+	movebytes( (uint8_t*)val, *nextbuf, 8 );
+	*val = htojd(*val);
+	(*nextbuf) += 8;
 }
-*/
-
 
 /*
 void parse(uint8_t* destbuf, uint16_t destsize, uint8_t** srcbuf, uint16_t srclen)

@@ -449,6 +449,20 @@ int main(int ARGC, char* ARGV[])
 	#undef TEST_STRING
 	#undef TEST_STRING_LEN
 
+	print("extract_float() for 12345.6789\n");
+	bot = (uint8_t*)"\x46\x40\xe6\xb7";
+	fa = (float)12345.6789;
+	nextbuf = bot;
+	extract_float(&nextbuf, &fb);
+	assert( fa == fb );
+
+	print("extract_double() for 12345.6789\n");
+	bot = (uint8_t*)"\x40\xc8\x1c\xd6\xe6\x31\xf8\xa1";
+	da = (double)12345.6789;
+	nextbuf = bot;
+	extract_double(&nextbuf, &db);
+	assert( da == db );
+
 	// TODO: more tests!
 
 	print("Tests for ujson-c complete - PASS\n");
