@@ -11,12 +11,12 @@ TESTS=ujson-tests
 _TESTSSRC=ujson-tests.c
 
 # Header file dependencies
-_DEPS=ujson-render.h ujson-extract.h hexdump.h endian.h udp.h schematags.h
+_DEPS=ujson-render.h ujson-extract.h ujson-parse.h hexdump.h endian.h udp.h schematags.h ujsizes.h
 IDIR=inc
 DEPS=$(pasubst %,$(IDIR)/%,$(_DEPS))
 
 # List of source files, excluding the EXE and TESTS runnables above
-_SOURCES=ujson-render.c ujson-extract.c hexdump.c udp.c endian.c
+_SOURCES=ujson-render.c ujson-extract.c ujson-parse.c hexdump.c udp.c endian.c
 SDIR=src
 SOURCES=$(patsubst %,$(SDIR)/%,$(_SOURCES))
 EXESRC=$(patsubst %,$(SDIR)/%,$(_EXESRC))

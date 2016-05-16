@@ -37,8 +37,6 @@ static void movebytes(uint8_t* to, uint8_t* from, uint16_t n)
 	while ( n-- ) to[n] = from[n];
 }
 
-// TODO: all these extract_foo need attention, just copypasta from render as notes to self
-
 // you'll probably never use these bool and null extracts; included for structural symmetry
 // perhaps to be removed later.
 void extract_bool_true(uint8_t** nextbuf, uint8_t* val)
@@ -134,7 +132,7 @@ void extract_double(uint8_t** nextbuf, double* val)
 }
 
 /*
-void parse(uint8_t* destbuf, uint16_t destsize, uint8_t** srcbuf, uint16_t srclen)
+void extract(uint8_t* destbuf, uint16_t destsize, uint8_t** srcbuf, uint16_t srclen)
 {
 	//TODO: jump table, atmost sizes... then extract/format/schema mirroring the erl
 
