@@ -108,7 +108,7 @@ void extract_string(uint8_t** nextbuf, char* str)
 {
 	uint16_t len = 0;
 	extract_uint16(nextbuf, &len);
-	movebytes(str, *nextbuf, len);
+	movebytes((uint8_t*)str, *nextbuf, len);
 	str[len] = '\0';
 	(*nextbuf) += len;
 }

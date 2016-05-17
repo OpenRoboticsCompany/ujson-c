@@ -22,8 +22,8 @@
   * Part of ujson-c - Implements microjson in C - see ujson.org
   * and https://github.com/aaronkondziela/ujson-c/
   *
-  * ujson-render.h
-  * Header for ujson-render.c, for rendering elements into ujson format
+  * ujson-encode.h
+  * Header for ujson-encode.c, for encoding elements into ujson format
   * with inline schema tags
   *
   */
@@ -32,19 +32,19 @@
 	#include <stdint.h>
 #endif
 
-void render_bool(uint8_t** nextbuf, uint8_t val);
-void render_null(uint8_t** nextbuf);
+void encode_bool(uint8_t** nextbuf, uint8_t val);
+void encode_null(uint8_t** nextbuf);
 
-void render_uint8(uint8_t** nextbuf, uint8_t val);
-void render_int8(uint8_t** nextbuf, uint8_t val);
-void render_uint16(uint8_t** nextbuf, uint16_t val);
-void render_int16(uint8_t** nextbuf, int16_t val);
-void render_uint32(uint8_t** nextbuf, uint32_t val);
-void render_int32(uint8_t** nextbuf, int32_t val);
-void render_uint64(uint8_t** nextbuf, uint64_t val);
-void render_int64(uint8_t** nextbuf, int64_t val);
+void encode_uint8(uint8_t** nextbuf, uint8_t val);
+void encode_int8(uint8_t** nextbuf, uint8_t val);
+void encode_uint16(uint8_t** nextbuf, uint16_t val);
+void encode_int16(uint8_t** nextbuf, int16_t val);
+void encode_uint32(uint8_t** nextbuf, uint32_t val);
+void encode_int32(uint8_t** nextbuf, int32_t val);
+void encode_uint64(uint8_t** nextbuf, uint64_t val);
+void encode_int64(uint8_t** nextbuf, int64_t val);
 
-void render_string(uint8_t** nextbuf, char* str);
+void encode_string(uint8_t** nextbuf, char* str);
 
-void render_float(uint8_t** nextbuf, float val);
-void render_double(uint8_t** nextbuf, double val);
+void encode_float(uint8_t** nextbuf, float val);
+void encode_double(uint8_t** nextbuf, double val);

@@ -39,7 +39,7 @@
 #endif
 #include <assert.h>
 
-#include "ujson-render.h"
+#include "ujson-encode.h"
 #include "ujson-extract.h"
 #include "endian.h"
 #include "movebytes.h"
@@ -120,150 +120,150 @@ int main(int ARGC, char* ARGV[])
 	assert( buffers_match(but, srcbuf, 10) );
 	assert( but[10] = (uint8_t)'\xAA' );
 
-	/************************ ujson-render tests ***************/
+	/************************ ujson-encode tests ***************/
 
-	print("Testing render_* functions...\n");
+	print("Testing encode_* functions...\n");
 
-	print("render_bool() for true\n");
+	print("encode_bool() for true\n");
 	zero(but, BUFFER_LENGTH);
 	nextbuf = but;
 	bot = (uint8_t*)"t";
-	render_bool(&nextbuf, 1);
+	encode_bool(&nextbuf, 1);
 	assert( buffers_match(but, bot, 1) );
 
-	print("render_bool() for false\n");
+	print("encode_bool() for false\n");
 	zero(but, BUFFER_LENGTH);
 	nextbuf = but;
 	bot = (uint8_t*)"f";
-	render_bool(&nextbuf, 0);
+	encode_bool(&nextbuf, 0);
 	assert( buffers_match(but, bot, 1) );
 
-	print("render_null()\n");
+	print("encode_null()\n");
 	zero(but, BUFFER_LENGTH);
 	nextbuf = but;
 	bot = (uint8_t*)"n";
-	render_null(&nextbuf);
+	encode_null(&nextbuf);
 	assert( buffers_match(but, bot, 1) );
 
-	print("render_uint8() for 0x7B (123)\n");
+	print("encode_uint8() for 0x7B (123)\n");
 	zero(but, BUFFER_LENGTH);
 	nextbuf = but;
 	bot = (uint8_t*)"C\x7B";
-	render_uint8(&nextbuf, (uint8_t)0x7B);
+	encode_uint8(&nextbuf, (uint8_t)0x7B);
 	assert( buffers_match(but, bot, 2) );
 
-	print("render_uint8() for 0x82 (130)\n");
+	print("encode_uint8() for 0x82 (130)\n");
 	zero(but, BUFFER_LENGTH);
 	nextbuf = but;
 	bot = (uint8_t*)"C\x82";
-	render_uint8(&nextbuf, (uint8_t)0x82);
+	encode_uint8(&nextbuf, (uint8_t)0x82);
 	assert( buffers_match(but, bot, 2) );
 
-	print("render_int8() for 0x7B (123)\n");
+	print("encode_int8() for 0x7B (123)\n");
 	zero(but, BUFFER_LENGTH);
 	nextbuf = but;
 	bot = (uint8_t*)"c\x7B";
-	render_int8(&nextbuf, (int8_t)0x7B);
+	encode_int8(&nextbuf, (int8_t)0x7B);
 	assert( buffers_match(but, bot, 2) );
 
-	print("render_int8() for 0x82 (-126)\n");
+	print("encode_int8() for 0x82 (-126)\n");
 	zero(but, BUFFER_LENGTH);
 	nextbuf = but;
 	bot = (uint8_t*)"c\x82";
-	render_int8(&nextbuf, (int8_t)0x82);
+	encode_int8(&nextbuf, (int8_t)0x82);
 	assert( buffers_match(but, bot, 2) );
 
-	print("render_uint16() for 0x7FFF\n");
+	print("encode_uint16() for 0x7FFF\n");
 	zero(but, BUFFER_LENGTH);
 	nextbuf = but;
 	bot = (uint8_t*)"W\x7f\xff";
-	render_uint16(&nextbuf, (uint16_t)0x7fff);
+	encode_uint16(&nextbuf, (uint16_t)0x7fff);
 	assert( buffers_match(but, bot, 3) );
 
-	print("render_uint16() for 0x8001\n");
+	print("encode_uint16() for 0x8001\n");
 	zero(but, BUFFER_LENGTH);
 	nextbuf = but;
 	bot = (uint8_t*)"W\x80\x01";
-	render_uint16(&nextbuf, (uint16_t)0x8001);
+	encode_uint16(&nextbuf, (uint16_t)0x8001);
 	assert( buffers_match(but, bot, 3) );
 
-	print("render_int16() for 0x7FFF\n");
+	print("encode_int16() for 0x7FFF\n");
 	zero(but, BUFFER_LENGTH);
 	nextbuf = but;
 	bot = (uint8_t*)"w\x7f\xff";
-	render_int16(&nextbuf, (uint16_t)0x7fff);
+	encode_int16(&nextbuf, (uint16_t)0x7fff);
 	assert( buffers_match(but, bot, 3) );
 
-	print("render_int16() for 0x8001\n");
+	print("encode_int16() for 0x8001\n");
 	zero(but, BUFFER_LENGTH);
 	nextbuf = but;
 	bot = (uint8_t*)"w\x80\x01";
-	render_int16(&nextbuf, (uint16_t)0x8001);
+	encode_int16(&nextbuf, (uint16_t)0x8001);
 	assert( buffers_match(but, bot, 3) );
 
-	printf("render_uint32() for 0x7fffffff\n");
+	printf("encode_uint32() for 0x7fffffff\n");
 	zero(but, BUFFER_LENGTH);
 	nextbuf = but;
 	bot = (uint8_t*)"I\x7f\xff\xff\xff";
-	render_uint32(&nextbuf, (uint32_t)0x7fffffff);
+	encode_uint32(&nextbuf, (uint32_t)0x7fffffff);
 	assert( buffers_match(but, bot, 5) );
 
-	printf("render_uint32() for 0x80000001\n");
+	printf("encode_uint32() for 0x80000001\n");
 	zero(but, BUFFER_LENGTH);
 	nextbuf = but;
 	bot = (uint8_t*)"I\x80\x00\x00\x01";
-	render_uint32(&nextbuf, (uint32_t)0x80000001);
+	encode_uint32(&nextbuf, (uint32_t)0x80000001);
 	assert( buffers_match(but, bot, 5) );
 
-	printf("render_int32() for 0x7fffffff\n");
+	printf("encode_int32() for 0x7fffffff\n");
 	zero(but, BUFFER_LENGTH);
 	nextbuf = but;
 	bot = (uint8_t*)"i\x7f\xff\xff\xff";
-	render_int32(&nextbuf, (int32_t)0x7fffffff);
+	encode_int32(&nextbuf, (int32_t)0x7fffffff);
 	assert( buffers_match(but, bot, 5) );
 
-	printf("render_int32() for 0x80000001\n");
+	printf("encode_int32() for 0x80000001\n");
 	zero(but, BUFFER_LENGTH);
 	nextbuf = but;
 	bot = (uint8_t*)"i\x80\x00\x00\x01";
-	render_int32(&nextbuf, (int32_t)0x80000001);
+	encode_int32(&nextbuf, (int32_t)0x80000001);
 	assert( buffers_match(but, bot, 5) );
 
-	printf("render_uint64() for 0x7fffffffffffffff\n");
+	printf("encode_uint64() for 0x7fffffffffffffff\n");
 	zero(but, BUFFER_LENGTH);
 	nextbuf = but;
 	bot = (uint8_t*)"Q\x7f\xff\xff\xff\xff\xff\xff\xff";
-	render_uint64(&nextbuf, (uint64_t)0x7fffffffffffffff);
+	encode_uint64(&nextbuf, (uint64_t)0x7fffffffffffffff);
 	assert( buffers_match(but, bot, 9) );
 
-	printf("render_uint64() for 0x8000000000000001\n");
+	printf("encode_uint64() for 0x8000000000000001\n");
 	zero(but, BUFFER_LENGTH);
 	nextbuf = but;
 	bot = (uint8_t*)"Q\x80\x00\x00\x00\x00\x00\x00\x01";
-	render_uint64(&nextbuf, (uint64_t)0x8000000000000001);
+	encode_uint64(&nextbuf, (uint64_t)0x8000000000000001);
 	assert( buffers_match(but, bot, 9) );
 
-	printf("render_int64() for 0x7fffffffffffffff\n");
+	printf("encode_int64() for 0x7fffffffffffffff\n");
 	zero(but, BUFFER_LENGTH);
 	nextbuf = but;
 	bot = (uint8_t*)"q\x7f\xff\xff\xff\xff\xff\xff\xff";
-	render_int64(&nextbuf, (int64_t)0x7fffffffffffffff);
+	encode_int64(&nextbuf, (int64_t)0x7fffffffffffffff);
 	assert( buffers_match(but, bot, 9) );
 
-	printf("render_int64() for 0x8000000000000001\n");
+	printf("encode_int64() for 0x8000000000000001\n");
 	zero(but, BUFFER_LENGTH);
 	nextbuf = but;
 	bot = (uint8_t*)"q\x80\x00\x00\x00\x00\x00\x00\x01";
-	render_int64(&nextbuf, (int64_t)0x8000000000000001);
+	encode_int64(&nextbuf, (int64_t)0x8000000000000001);
 	assert( buffers_match(but, bot, 9) );
 
-	print("render_string()\n");
+	print("encode_string()\n");
 	zero(but, BUFFER_LENGTH);
 	nextbuf = but;
 	#define TEST_STRING "my god, it's full of strings!"
 	#define TEST_STRING_LEN 32
 	bot = (uint8_t*)"s\x00\x1D" TEST_STRING;
-	render_string(&nextbuf, (char*)TEST_STRING);
+	encode_string(&nextbuf, (char*)TEST_STRING);
 	assert( buffers_match(but, bot, TEST_STRING_LEN) );
 	#undef TEST_STRING
 	#undef TEST_STRING_LEN
@@ -284,18 +284,18 @@ int main(int ARGC, char* ARGV[])
 		#warning "Macro __FLOAT_WORD_ORDER__ undefined, assuming non-mixed"
 	#endif
 
-	print("render_float() for 12345.6789\n");
+	print("encode_float() for 12345.6789\n");
 	zero(but, BUFFER_LENGTH);
 	nextbuf = but;
 	bot = (uint8_t*)"d\x46\x40\xe6\xb7";
-	render_float(&nextbuf, (float)12345.6789);
+	encode_float(&nextbuf, (float)12345.6789);
 	assert( buffers_match(but, bot, 5) );
 
-	print("render_double() for 12345.6789\n");
+	print("encode_double() for 12345.6789\n");
 	zero(but, BUFFER_LENGTH);
 	nextbuf = but;
 	bot = (uint8_t*)"D\x40\xc8\x1c\xd6\xe6\x31\xf8\xa1";
-	render_double(&nextbuf, (double)12345.6789);
+	encode_double(&nextbuf, (double)12345.6789);
 	assert( buffers_match(but, bot, 9) );
 
 	/******************* ujson-extract tests ****************/

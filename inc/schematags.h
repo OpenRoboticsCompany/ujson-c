@@ -23,7 +23,7 @@
   * and https://github.com/aaronkondziela/ujson-c/
   *
   * schematags.h
-  * Defines for the various schema data type tags used in rendered ujson
+  * Defines for the various schema data type tags used in encoded ujson
   * and ujson schemas
   *
   */

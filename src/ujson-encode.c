@@ -22,42 +22,42 @@
   * Part of ujson-c - Implements microjson in C - see ujson.org
   * and https://github.com/aaronkondziela/ujson-c/
   *
-  * ujson-render.c
-  * Rendering functions - serialize elements into ujson format
+  * ujson-encode.c
+  * Encode functions - serialize elements into ujson format
   *
   */
 
 #include "endian.h"
 #include "movebytes.h"
-#include "ujson-render.h"
+#include "ujson-encode.h"
 
-void render_bool(uint8_t** nextbuf, uint8_t val)
+void encode_bool(uint8_t** nextbuf, uint8_t val)
 {
 	(*nextbuf)[0] = val ? (uint8_t)'t' : (uint8_t)'f';
 	(*nextbuf) += 1;
 }
 
-void render_null(uint8_t** nextbuf)
+void encode_null(uint8_t** nextbuf)
 {
 	(*nextbuf)[0] = (uint8_t)'n';
 	(*nextbuf) += 1;
 }
 
-void render_uint8(uint8_t** nextbuf, uint8_t val)
+void encode_uint8(uint8_t** nextbuf, uint8_t val)
 {
 	(*nextbuf)[0] = 'C';
 	(*nextbuf)[1] = val;
 	(*nextbuf) += 2;
 }
 
-void render_int8(uint8_t** nextbuf, uint8_t val)
+void encode_int8(uint8_t** nextbuf, uint8_t val)
 {
 	(*nextbuf)[0] = 'c';
 	(*nextbuf)[1] = val;
 	(*nextbuf) += 2;
 }
 
-void render_uint16(uint8_t** nextbuf, uint16_t val)
+void encode_uint16(uint8_t** nextbuf, uint16_t val)
 {
 	val = htoj16(val);
 	(*nextbuf)[0] = 'W';
@@ -65,7 +65,7 @@ void render_uint16(uint8_t** nextbuf, uint16_t val)
 	(*nextbuf) += 3;
 }
 
-void render_int16(uint8_t** nextbuf, int16_t val)
+void encode_int16(uint8_t** nextbuf, int16_t val)
 {
 	val = htoj16(val);
 	(*nextbuf)[0] = 'w';
@@ -73,7 +73,7 @@ void render_int16(uint8_t** nextbuf, int16_t val)
 	(*nextbuf) += 3;
 }
 
-void render_uint32(uint8_t** nextbuf, uint32_t val)
+void encode_uint32(uint8_t** nextbuf, uint32_t val)
 {
 	val = htoj32(val);
 	(*nextbuf)[0] = 'I';
@@ -81,7 +81,7 @@ void render_uint32(uint8_t** nextbuf, uint32_t val)
 	(*nextbuf) += 5;
 }
 
-void render_int32(uint8_t** nextbuf, int32_t val)
+void encode_int32(uint8_t** nextbuf, int32_t val)
 {
 	val = htoj32(val);
 	(*nextbuf)[0] = 'i';
@@ -89,7 +89,7 @@ void render_int32(uint8_t** nextbuf, int32_t val)
 	(*nextbuf) += 5;
 }
 
-void render_uint64(uint8_t** nextbuf, uint64_t val)
+void encode_uint64(uint8_t** nextbuf, uint64_t val)
 {
 	val = htoj64(val);
 	(*nextbuf)[0] = 'Q';
@@ -97,7 +97,7 @@ void render_uint64(uint8_t** nextbuf, uint64_t val)
 	(*nextbuf) += 9;
 }
 
-void render_int64(uint8_t** nextbuf, int64_t val)
+void encode_int64(uint8_t** nextbuf, int64_t val)
 {
 	val = htoj64(val);
 	(*nextbuf)[0] = 'q';
@@ -105,7 +105,7 @@ void render_int64(uint8_t** nextbuf, int64_t val)
 	(*nextbuf) += 9;
 }
 
-void render_string(uint8_t** nextbuf, char* str)
+void encode_string(uint8_t** nextbuf, char* str)
 {
 	uint16_t len = 0, len2 = 0;
 	while (str[len++]);
@@ -119,7 +119,7 @@ void render_string(uint8_t** nextbuf, char* str)
 	(*nextbuf) += 3 + len2;
 }
 
-void render_float(uint8_t** nextbuf, float val)
+void encode_float(uint8_t** nextbuf, float val)
 {
 	val = htojf(val);
 	(*nextbuf)[0] = 'd';
@@ -127,7 +127,7 @@ void render_float(uint8_t** nextbuf, float val)
 	(*nextbuf) += 5;
 }
 
-void render_double(uint8_t** nextbuf, double val)
+void encode_double(uint8_t** nextbuf, double val)
 {
 	val = htojd(val);
 	(*nextbuf)[0] = 'D';

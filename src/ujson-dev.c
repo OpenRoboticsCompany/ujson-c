@@ -33,7 +33,7 @@
 #include <stdio.h>
 #include <stdint.h>
 
-#include "ujson-render.h"
+#include "ujson-encode.h"
 #include "hexdump.h"
 #include "endian.h"
 #include "udp.h"
@@ -58,7 +58,7 @@ int main(int argc, char* argv[])
 	printf("buffer before:\n");
 	hexdump(buf, BUFLEN);
 
-	render_double(&nextbuf, dd);
+	encode_double(&nextbuf, dd);
 
 	printf("buffer after:\n");
 	hexdump(buf, BUFLEN);
