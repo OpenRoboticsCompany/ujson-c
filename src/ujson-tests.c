@@ -42,6 +42,7 @@
 #include "ujson-render.h"
 #include "ujson-extract.h"
 #include "endian.h"
+#include "movebytes.h"
 
 // Change output routine here for serial output on embedded, etc.
 void print(char* s)
@@ -60,6 +61,8 @@ void zero( uint8_t* b, uint16_t len )
 	while (len--) b[len] = 0;
 }
 
+//TODO factor tests out to smaller files.
+//TODO assert() is ghetto as a test system. add more awesome sauce.
 int main(int ARGC, char* ARGV[])
 {
 	print("Running ujson-c tests...\n");
@@ -106,6 +109,16 @@ int main(int ARGC, char* ARGV[])
 	u64a = 0x7E57AB1EDEADFA11ull;
 	u64b = _swap_fpa_64( u64a );
 	assert( u64b == 0xDEADFA117E57AB1Eull );
+
+	/************************ movebytes tests ***************/
+
+	print("Testing movebytes...\n");
+	uint8_t* srcbuf = (uint8_t*)"1234567890";
+	zero(but, BUFFER_LENGTH);
+	but[10] = (uint8_t)'\xAA'; //overrun canary
+	movebytes(but, srcbuf, 10); //not including that trailing null
+	assert( buffers_match(but, srcbuf, 10) );
+	assert( but[10] = (uint8_t)'\xAA' );
 
 	/************************ ujson-render tests ***************/
 
@@ -443,7 +456,7 @@ int main(int ARGC, char* ARGV[])
 	nextbuf = bot;
 	but[TEST_STRING_LEN+1] = '\xAA';
 	extract_string(&nextbuf, (char*)but);
-	assert( buffers_match(but, TEST_STRING, TEST_STRING_LEN) );
+	assert( buffers_match(but, (uint8_t*)TEST_STRING, TEST_STRING_LEN) );
 	// check if writing past the end...
 	assert( but[TEST_STRING_LEN+1] == '\xAA' );
 	#undef TEST_STRING

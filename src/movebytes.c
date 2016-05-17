@@ -22,50 +22,16 @@
   * Part of ujson-c - Implements microjson in C - see ujson.org
   * and https://github.com/aaronkondziela/ujson-c/
   *
-  * ujson-parse.c
-  * Parsing functions - de-serialize elements from ujson format
+  * movebytes.c
+  * Copies from one buffer to another, bytewise. This avoids machine alignment
+  * issues that can crop up in some cases with memcpy, for instance. You can
+  * probably optimize how this works for your specific embodiment of ujson-c
   *
   */
 
-#include "endian.h"
 #include "movebytes.h"
-#include "ujson-parse.h"
-#include "ujson-extract.h"
-#include "schematags.h"
-#include "ujsizes.h"
 
-void parse(uint8_t** destbuf, uint16_t destsize, uint8_t** srcbuf, uint16_t srclen)
+void movebytes(uint8_t* to, uint8_t* from, uint16_t n)
 {
-	uint8_t* srcbuf_start = *srcbuf;
-
-/*
-	while (*srcbuf - (*srcbuf_start + len)) {
-		// not at end yet
-		switch(derp) {
-			//case UJ_BOOL_TRUE_TAG:
-			//case UJ_BOOL_FALSE_TAG:
-			//case UJ_NULL_TAG:
-			//case UJ_UINT8_TAG:
-			//case UJ_INT8_TAG:
-			//case UJ_UINT16_TAG:
-			//case UJ_INT16_TAG:
-			//case UJ_UINT32_TAG:
-			//case UJ_INT32_TAG:
-			//case UJ_UINT64_TAG:
-			//case UJ_INT64_TAG:
-			//case UJ_STRING_TAG:
-			//case UJ_FLOAT_TAG:
-			//case UJ_DOUBLE_TAG:
-			//case UJ_ARRAY_TAG: //parse can call itself here, srcbuf** will step along. just pass new srclen
-			//case UJ_OBJECT_TAG:
-			default:
-		}
-	}
-*/
+	while (n--) to[n] = from[n];
 }
-
-
-
-
-
-

@@ -28,12 +28,8 @@
   */
 
 #include "endian.h"
+#include "movebytes.h"
 #include "ujson-render.h"
-
-static void movebytes(uint8_t* to, uint8_t* from, uint16_t n)
-{
-	while ( n-- ) to[n] = from[n];
-}
 
 void render_bool(uint8_t** nextbuf, uint8_t val)
 {

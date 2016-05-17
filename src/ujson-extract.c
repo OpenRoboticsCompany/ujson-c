@@ -30,12 +30,8 @@
   */
 
 #include "endian.h"
+#include "movebytes.h"
 #include "ujson-extract.h"
-
-static void movebytes(uint8_t* to, uint8_t* from, uint16_t n)
-{
-	while ( n-- ) to[n] = from[n];
-}
 
 // you'll probably never use these bool and null extracts; included for structural symmetry
 // perhaps to be removed later.
