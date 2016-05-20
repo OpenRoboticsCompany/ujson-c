@@ -22,29 +22,15 @@
   * Part of ujson-c - Implements microjson in C - see ujson.org
   * and https://github.com/aaronkondziela/ujson-c/
   *
-  * ujson-dev.c
-  *
-  * This is only used during development of the ujson-c code, and will
-  * most likely be deleted from the final release. Just various internal
-  * probing and testing and whatnot. Nothing to see here, move along.
+  * hash.h
   *
   */
 
-#include <stdio.h>
+#ifndef _HASH_H
+#define _HASH_H
+
 #include <stdint.h>
 
-#include "ujson-encode.h"
-#include "hexdump.h"
-#include "endian.h"
-#include "udp.h"
-#include "hash.h"
+uint16_t hash_buffer(const uint8_t* x, const uint16_t len);
 
-int main(int argc, char* argv[])
-{
-	printf("Running ujson dev rig.\n");
-	
-#define BUFLEN 55
-	uint8_t buf[BUFLEN];
-
-	return(0);
-}
+#endif
