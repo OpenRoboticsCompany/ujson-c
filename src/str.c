@@ -22,26 +22,45 @@
   * Part of ujson-c - Implements microjson in C - see ujson.org
   * and https://github.com/aaronkondziela/ujson-c/
   *
-  * hash.c
-  * for hashmaps
+  * str.c
+  * Simple string handling
   *
   */
 
+#include <string.h>
 #include <stdint.h>
-#include "hash.h"
+#include <stdlib.h>
+
 #include "str.h"
 
-uint16_t hash_buffer(const uint8_t* x, const uint16_t len)
+#define UTF8_FINDLEN
+
+str* str_allot(uint16_t len)
 {
-	uint16_t h = 0;
-	uint16_t i;
-	for (i = 0; i < len; i++) {
-		h += ((x[i] << 9) + (x[i] << 4) + x[i]) ^ (h << 3);
-	}
-	return h;
+	str* s = (str*)calloc(1, (size_t)(sizeof(str) + len + 1));
+	s->length = len;
+	s->data = s->buffer;
+	return s;
 }
 
-uint16_t hash(const str* s)
+void str_release(str* s)
 {
-	return hash_buffer(s->data, s->length);
+	if (s) free(s);
+}
+
+int str_eq(str* a, str* b)
+{
+	if (a->length != b->length) return 0;
+	return !strncmp((char*)a->data, (char*)b->data, a->length);
+}
+
+uint16_t str_findlen(const uint8_t* s)
+{
+#ifdef UTF8_FINDLEN
+	uint16_t i, j;
+	while (s[i]) if ((s[i++] & 0xC0) != 0x80) j++;
+	return j;
+#else
+	return (uint16_t) strlen(str);
+#endif
 }

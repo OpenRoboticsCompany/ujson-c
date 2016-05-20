@@ -30,7 +30,9 @@
 #define _HASH_H
 
 #include <stdint.h>
+#include "str.h"
 
 uint16_t hash_buffer(const uint8_t* x, const uint16_t len);
+uint16_t hash(const str* s);
 
 #endif

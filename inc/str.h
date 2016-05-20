@@ -22,26 +22,35 @@
   * Part of ujson-c - Implements microjson in C - see ujson.org
   * and https://github.com/aaronkondziela/ujson-c/
   *
-  * hash.c
-  * for hashmaps
+  * str.h
   *
   */
 
+#ifndef _STR_H
+#define _STR_H
+
 #include <stdint.h>
-#include "hash.h"
-#include "str.h"
 
-uint16_t hash_buffer(const uint8_t* x, const uint16_t len)
-{
-	uint16_t h = 0;
-	uint16_t i;
-	for (i = 0; i < len; i++) {
-		h += ((x[i] << 9) + (x[i] << 4) + x[i]) ^ (h << 3);
-	}
-	return h;
-}
+#ifndef STACKSTR_SIZE
+	#define STACKSTR_SIZE (256)
+//	#warning STACKSTR_SIZE undefined, using default of 256
+#endif
 
-uint16_t hash(const str* s)
-{
-	return hash_buffer(s->data, s->length);
-}
+typedef struct {
+	uint8_t* data;
+	uint16_t length;
+	uint8_t buffer[0];
+} str;
+
+typedef struct {
+	uint8_t* data;
+	uint16_t length;
+	uint8_t buffer[STACKSTR_SIZE];
+} stackstr;
+
+str* str_allot(uint16_t len);
+void str_release(str* s);
+int str_eq(str* a, str* b);
+uint16_t str_findlen(const uint8_t* s);
+
+#endif
