@@ -32,12 +32,15 @@
 
 #include <stdio.h>
 #include <stdint.h>
+#include <string.h>
 
 #include "ujson-encode.h"
 #include "hexdump.h"
 #include "endian.h"
 #include "udp.h"
 #include "hash.h"
+#define STACKSTR_SIZE 123
+#include "str.h"
 
 int main(int argc, char* argv[])
 {
@@ -48,3 +51,7 @@ int main(int argc, char* argv[])
 
 	return(0);
 }
+
+
+
+

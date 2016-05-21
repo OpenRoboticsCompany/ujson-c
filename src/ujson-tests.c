@@ -33,6 +33,8 @@
 
 #include <stdio.h>
 #include <stdint.h>
+#include <string.h>
+#include <stdlib.h>
 
 #ifdef NDEBUG
 #undef NDEBUG
@@ -43,6 +45,8 @@
 #include "ujson-extract.h"
 #include "endian.h"
 #include "movebytes.h"
+#include "hash.h"
+#include "str.h"
 
 // Change output routine here for serial output on embedded, etc.
 void print(char* s)
@@ -476,8 +480,51 @@ int main(int ARGC, char* ARGV[])
 	extract_double(&nextbuf, &db);
 	assert( da == db );
 
+	/********************** str tests ************/
+
+	print("str\n");
+
+	str* test_str1;
+	str* test_str2;
+	#define TEST_STRING_1 "this is a test string, ain't it grand?"
+	#define TEST_STRING_2 "this is a test string, but shorter."
+	bot = (uint8_t*)TEST_STRING_1;
+	zero(but, BUFFER_LENGTH);
+	test_str1 = str_allot( strlen((char*)bot) );
+	assert( test_str1->length == 0 );
+	assert( test_str1->data == test_str1->buffer );
+	assert( strlen((char*)test_str1->data) == 0 );
+
+	print("str_set()\n");
+	str_set(test_str1, bot);
+	assert( strlen((char*)test_str1->data) == strlen((char*)bot) );
+	assert( test_str1->length == strlen((char*)bot) );
+	assert( buffers_match(test_str1->data, bot, strlen((char*)bot) ));
+
+	test_str2 = str_allot( strlen((char*)bot) );
+	str_set(test_str2, bot);
+	assert( str_eq(test_str1, test_str2) );
+
+	print("str_eq()\n");
+	bot = (uint8_t*)TEST_STRING_2;
+	str_set(test_str2, bot);
+	assert( ! str_eq(test_str1, test_str2) );
+	assert( test_str1->length > test_str2->length );
+	
+	print("str_release()\n");
+	str_release(&test_str2);
+	assert( test_str2 == NULL );
+
+	print("str_from()\n");
+	test_str2 = str_from(TEST_STRING_1);
+	assert( test_str2->length = strlen(TEST_STRING_1) );
+	assert( str_eq(test_str1, test_str2) );
+
 	// TODO: more tests!
 
 	print("Tests for ujson-c complete - PASS\n");
 	return(0);
 }
+
+
+

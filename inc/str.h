@@ -31,26 +31,27 @@
 
 #include <stdint.h>
 
-#ifndef STACKSTR_SIZE
-	#define STACKSTR_SIZE (256)
-//	#warning STACKSTR_SIZE undefined, using default of 256
-#endif
+#define STACKSTR_LEN (255)
 
 typedef struct {
 	uint8_t* data;
 	uint16_t length;
+	uint16_t max;
 	uint8_t buffer[0];
 } str;
 
 typedef struct {
 	uint8_t* data;
 	uint16_t length;
-	uint8_t buffer[STACKSTR_SIZE];
+	uint16_t max;
+	uint8_t buffer[STACKSTR_LEN+1];
 } stackstr;
 
 str* str_allot(uint16_t len);
-void str_release(str* s);
+void str_release(str** s);
 int str_eq(str* a, str* b);
 uint16_t str_findlen(const uint8_t* s);
+void str_set(str* s, uint8_t* src_buf);
+str* str_from(uint8_t* src_buf);
 
 #endif
