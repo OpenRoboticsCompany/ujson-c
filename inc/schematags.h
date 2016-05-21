@@ -29,8 +29,7 @@
   */
 
 #ifndef _UJSON_SCHEMATAGS_H
-	#define _UJSON_SCHEMATAGS_H 1
-#endif
+#define _UJSON_SCHEMATAGS_H
 
 #ifndef _STDINT_H
 	#include <stdint.h>
@@ -53,4 +52,4 @@
 #define UJ_ARRAY_TAG      ((uint8_t)'a')
 #define UJ_OBJECT_TAG     ((uint8_t)'o')
 
-
+#endif

@@ -26,6 +26,11 @@
   *
   */
 
+#ifndef _UJ_MOVEBYTES_H
+#define _UJ_MOVEBYTES_H
+
 #include <stdint.h>
 
 void movebytes(uint8_t* to, uint8_t* from, uint16_t n);
+
+#endif

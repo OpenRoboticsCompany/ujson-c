@@ -28,9 +28,10 @@
   *
   */
 
-#ifndef _STDINT_H
-	#include <stdint.h>
-#endif
+#ifndef _UJ_ENCODE_H
+#define _UJ_ENCODE_H
+
+#include <stdint.h>
 
 void encode_bool(uint8_t** nextbuf, uint8_t val);
 void encode_null(uint8_t** nextbuf);
@@ -48,3 +49,5 @@ void encode_string(uint8_t** nextbuf, char* str);
 
 void encode_float(uint8_t** nextbuf, float val);
 void encode_double(uint8_t** nextbuf, double val);
+
+#endif

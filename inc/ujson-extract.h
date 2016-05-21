@@ -26,9 +26,10 @@
   *
   */
 
-#ifndef _STDINT_H
-	#include <stdint.h>
-#endif
+#ifndef _UJ_EXTRACT_H
+#define _UJ_EXTRACT_H
+
+#include <stdint.h>
 
 void extract_bool_true(uint8_t** nextbuf, uint8_t* val);
 void extract_bool_false(uint8_t** nextbuf, uint8_t* val);
@@ -48,5 +49,4 @@ void extract_string(uint8_t** nextbuf, char* str);
 void extract_float(uint8_t** nextbuf, float* val);
 void extract_double(uint8_t** nextbuf, double* val);
 
-
-
+#endif

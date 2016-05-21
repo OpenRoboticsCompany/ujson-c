@@ -27,9 +27,10 @@
   *
   */
 
-#ifndef _STDINT_H
-	#include <stdint.h>
-#endif
+#ifndef _UJ_SIZES_H
+#define _UJ_SIZES_H
+
+#include <stdint.h>
 
 #define UJ_BOOL_TRUE_SIZE  (1)
 #define UJ_BOOL_FALSE_SIZE (1)
@@ -48,4 +49,4 @@
 #define UJ_ARRAY_MAX_SIZE  (65535)
 #define UJ_OBJECT_MAX_SIZE (65535)
 
-
+#endif

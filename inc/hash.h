@@ -26,8 +26,8 @@
   *
   */
 
-#ifndef _HASH_H
-#define _HASH_H
+#ifndef _UJ_HASH_H
+#define _UJ_HASH_H
 
 #include <stdint.h>
 #include "str.h"

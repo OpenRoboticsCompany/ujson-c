@@ -50,13 +50,10 @@ Where:
 	d  -> eight-byte double type
 */
 
-#ifndef _UJSON_ENDIAN_H
-	#define _UJSON_ENDIAN_H 1
-#endif
+#ifndef _UJ_ENDIAN_H
+#define _UJ_ENDIAN_H
 
-#ifndef _STDINT_H
-	#include <stdint.h>
-#endif
+#include <stdint.h>
 
 uint16_t _swap_16(uint16_t x);
 uint32_t _swap_32(uint32_t x);
@@ -110,4 +107,6 @@ uint64_t _bytewise_double_to_uint64(double d);
 	#define jtohd(x) ((x))
 #else
 	#error "Macro __BYTE_ORDER__ has unexpected value or is undefined"
+#endif
+
 #endif

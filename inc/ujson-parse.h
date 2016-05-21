@@ -26,10 +26,12 @@
   *
   */
 
-#ifndef _STDINT_H
-	#include <stdint.h>
+#ifndef _UJ_PARSE_H
+#define _UJ_PARSE_H
+
+#include <stdint.h>
+
+// ...
+
 #endif
-
-
-
 

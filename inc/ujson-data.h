@@ -26,6 +26,9 @@
   *
   */
 
+#ifndef _UJ_DATA_H
+#define _UJ_DATA_H
+
 #include <stdint.h>
 
 void data_bool_true(uint8_t** nextbuf, uint8_t val);
@@ -45,3 +48,4 @@ void data_float(uint8_t** nextbuf, float val);
 void data_double(uint8_t** nextbuf, double val);
 void data(uint8_t* destbuf, uint16_t destsize, uint8_t** srcbuf, uint16_t srclen);
 
+#endif
