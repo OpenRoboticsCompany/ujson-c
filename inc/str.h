@@ -31,7 +31,7 @@
 
 #include <stdint.h>
 
-#define STACKSTR_LEN (255)
+#define FIXEDSTR_LEN (255)
 
 typedef struct {
 	uint8_t* data;
@@ -44,8 +44,8 @@ typedef struct {
 	uint8_t* data;
 	uint16_t length;
 	uint16_t max;
-	uint8_t buffer[STACKSTR_LEN+1];
-} stackstr;
+	uint8_t buffer[FIXEDSTR_LEN+1];
+} fixedstr;
 
 str* str_allot(uint16_t len);
 void str_release(str** s);
