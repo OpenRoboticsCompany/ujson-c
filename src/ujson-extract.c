@@ -127,36 +127,8 @@ void extract_double(uint8_t** nextbuf, double* val)
 	(*nextbuf) += 8;
 }
 
-/*
-void extract(uint8_t* destbuf, uint16_t destsize, uint8_t** srcbuf, uint16_t srclen)
-{
-	//TODO: jump table, atmost sizes... then extract/format/schema mirroring the erl
-
-	uint8_t derp;
-
-	switch(derp) {
-		case UJ_BOOL_TRUE_TAG:
-		case UJ_BOOL_FALSE_TAG:
-		case UJ_NULL_TAG:
-		case UJ_UINT8_TAG:
-		case UJ_INT8_TAG:
-		case UJ_UINT16_TAG:
-		case UJ_INT16_TAG:
-		case UJ_UINT32_TAG:
-		case UJ_INT32_TAG:
-		case UJ_UINT64_TAG:
-		case UJ_INT64_TAG:
-		case UJ_STRING_TAG:
-		case UJ_FLOAT_TAG:
-		case UJ_DOUBLE_TAG:
-		case UJ_ARRAY_TAG:
-		case UJ_OBJECT_TAG:
-		default:
-	}
-
-}
-*/
-
+// TODO
+// extract() - apply schema to data
 
 
 
