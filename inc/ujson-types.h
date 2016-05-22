@@ -29,6 +29,10 @@
 #ifndef _UJ_TYPES_H
 #define _UJ_TYPES_H
 
+#include <stdint.h>
+
+#include "str.h"
+
 enum ujtype {
 	uj_string,
 	uj_number,
@@ -62,15 +66,15 @@ struct ujvalue {
 	union {
 		ujobject* object;
 		ujarray* array;
-		uint8_t* string;
-		uint8_t ui8;
-		int8_t i8;
-		uint16_t ui16;
-		int16_t i16;
-		uint32_t ui32;
-		int32_t i32;
-		uint64_t ui64;
-		int64_t i64;
+		str* string;
+		uint8_t uint8;
+		int8_t int8;
+		uint16_t uint16;
+		int16_t int16;
+		uint32_t uint32;
+		int32_t int32;
+		uint64_t uint64;
+		int64_t int64;
 		float f;
 		double d;
 	} data_as;

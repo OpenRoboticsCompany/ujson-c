@@ -40,6 +40,8 @@ ujvalue* ujvalue_new()
 
 void ujvalue_release(ujvalue** v)
 {
+	if ((*v)->type == uj_string && (*v)->data_as.string) str_release(&(*v)->data_as.string);
+	// TODO chain-release arrays and objects as well
 	if (*v) free(*v);
 	*v = NULL;
 }

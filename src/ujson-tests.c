@@ -425,7 +425,7 @@ int main(int ARGC, char* ARGV[])
 
 	
 	print("extract_uint64() for 0x7fffffffffffffff\n");
-	bot = (uint8_t*)"I\x7f\xff\xff\xff\xff\xff\xff\xff\xAA";
+	bot = (uint8_t*)"Q\x7f\xff\xff\xff\xff\xff\xff\xff\xAA";
 	nextbuf = bot + 1;
 	u64a = 0x7fffffffffffffff;
 	u64b = 0;
@@ -433,7 +433,7 @@ int main(int ARGC, char* ARGV[])
 	assert( u64a == u64b );
 
 	print("extract_uint64() for 0x8000000000000001\n");
-	bot = (uint8_t*)"I\x80\x00\x00\x00\x00\x00\x00\x01\xAA";
+	bot = (uint8_t*)"Q\x80\x00\x00\x00\x00\x00\x00\x01\xAA";
 	nextbuf = bot + 1;
 	u64a = 0x8000000000000001;
 	u64b = 0;
@@ -441,7 +441,7 @@ int main(int ARGC, char* ARGV[])
 	assert( u64a == u64b );
 
 	print("extract_int64() for 0x7fffffffffffffff\n");
-	bot = (uint8_t*)"i\x7f\xff\xff\xff\xff\xff\xff\xff\xAA";
+	bot = (uint8_t*)"q\x7f\xff\xff\xff\xff\xff\xff\xff\xAA";
 	nextbuf = bot + 1;
 	i64a = 0x7fffffffffffffff;
 	i64b = 0;
@@ -449,7 +449,7 @@ int main(int ARGC, char* ARGV[])
 	assert( i64a == i64b );
 
 	print("extract_int64() for 0x8000000000000001\n");
-	bot = (uint8_t*)"i\x80\x00\x00\x00\x00\x00\x00\x01\xAA";
+	bot = (uint8_t*)"q\x80\x00\x00\x00\x00\x00\x00\x01\xAA";
 	nextbuf = bot + 1;
 	i64a = 0x8000000000000001;
 	i64b = 0;
@@ -463,7 +463,7 @@ int main(int ARGC, char* ARGV[])
 	bot = (uint8_t*)"\x00\x1D" TEST_STRING;
 	nextbuf = bot;
 	but[TEST_STRING_LEN+1] = '\xAA';
-	extract_string(&nextbuf, (char*)but);
+	extract_string(&nextbuf, but);
 	assert( buffers_match(but, (uint8_t*)TEST_STRING, TEST_STRING_LEN) );
 	// check if writing past the end...
 	assert( but[TEST_STRING_LEN+1] == '\xAA' );
@@ -548,6 +548,117 @@ int main(int ARGC, char* ARGV[])
 	bot = (uint8_t*)"n";
 	v = parse(&bot, 1);
 	assert( v->type == uj_null );
+	ujvalue_release(&v);
+
+	print("parse(uint8)\n");
+	bot = (uint8_t*)"C\x7f\xAA";
+	u8a = 0x7f;
+	v = parse(&bot, 2);
+	assert( v->type == uj_number );
+	assert( v->numbertype == uj_uint8 );
+	assert( v->data_as.uint8 == u8a );
+	ujvalue_release(&v);
+
+	print("parse(int8)\n");
+	bot = (uint8_t*)"c\x81\xAA";
+	i8a = 0x81;
+	v = parse(&bot, 2);
+	assert( v->type == uj_number );
+	assert( v->numbertype == uj_int8 );
+	assert( v->data_as.int8 == i8a );
+	ujvalue_release(&v);
+
+	print("parse(uint16)\n");
+	bot = (uint8_t*)"W\x7f\xff\xAA";
+	u16a = 0x7fff;
+	v = parse(&bot, 3);
+	assert( v->type == uj_number );
+	assert( v->numbertype == uj_uint16 );
+	assert( v->data_as.uint16 == u16a );
+	ujvalue_release(&v);
+
+	print("parse(int16)\n");
+	bot = (uint8_t*)"w\x80\x02\xAA";
+	i16a = 0x8002;
+	v = parse(&bot, 3);
+	assert( v->type == uj_number );
+	assert( v->numbertype == uj_int16 );
+	assert( v->data_as.int16 == i16a );
+	ujvalue_release(&v);
+
+	print("parse(uint32)\n");
+	bot = (uint8_t*)"I\x7f\xff\xff\xff\xAA";
+	u32a = 0x7fffffff;
+	v = parse(&bot, 5);
+	assert( v->type == uj_number );
+	assert( v->numbertype == uj_uint32 );
+	assert( v->data_as.uint32 == u32a );
+	ujvalue_release(&v);
+
+	print("parse(int32)\n");
+	bot = (uint8_t*)"i\x80\x00\x00\x01\xAA";
+	i32a = 0x80000001;
+	v = parse(&bot, 5);
+	assert( v->type == uj_number );
+	assert( v->numbertype == uj_int32 );
+	assert( v->data_as.int32 == i32a );
+	ujvalue_release(&v);
+
+	print("parse(uint64)\n");
+	bot = (uint8_t*)"Q\x7f\xff\xff\xff\xff\xff\xff\xff\xAA";
+	u64a = 0x7fffffffffffffff;
+	v = parse(&bot, 9);
+	assert( v->type == uj_number );
+	assert( v->numbertype == uj_uint64 );
+	assert( v->data_as.uint64 == u64a );
+	ujvalue_release(&v);
+
+	print("parse(int64)\n");
+	bot = (uint8_t*)"q\x80\x00\x00\x00\x00\x00\x00\x03\xAA";
+	i64a = 0x8000000000000003;
+	v = parse(&bot, 9);
+	assert( v->type == uj_number );
+	assert( v->numbertype == uj_int64 );
+	assert( v->data_as.int64 == i64a );
+	ujvalue_release(&v);
+
+
+	print("parse(string)\n");
+	#define TEST_STRING "if you have two strings do you call it twine?"
+	#define TEST_STRING_LEN 45
+	bot = (uint8_t*)"s\x00\x2D" TEST_STRING;
+	v = parse(&bot, TEST_STRING_LEN + 3);
+	assert( v->type == uj_string );
+	assert( v->data_as.string );
+	assert( v->data_as.string->data );
+	assert( v->data_as.string->length = TEST_STRING_LEN );
+	assert( buffers_match(v->data_as.string->data, (uint8_t*)TEST_STRING, TEST_STRING_LEN) );
+	#undef TEST_STRING
+	#undef TEST_STRING_LEN
+
+	print("string release chained from value release\n");
+	str** str_release_check;
+	str_release_check = &v->data_as.string;
+	assert( *str_release_check );
+	ujvalue_release(&v);
+	assert( ! *str_release_check );
+
+	print("parse(float)\n");
+	bot = (uint8_t*)"d\x46\x40\xe6\xb7";
+	fa = (float)12345.6789;
+	v = parse(&bot, 5);
+	assert( v->type == uj_number );
+	assert( v->numbertype == uj_float );
+	assert( v->data_as.f == fa );
+	ujvalue_release(&v);
+
+	print("parse(double)\n");
+	bot = (uint8_t*)"D\x40\xc8\x1c\xd6\xe6\x31\xf8\xa1";
+	da = (double)12345.6789;
+	v = parse(&bot, 9);
+	assert( v->type == uj_number );
+	assert( v->numbertype == uj_double );
+	assert( v->data_as.d == da );
 	ujvalue_release(&v);
 
 	// TODO: more tests!

@@ -104,11 +104,11 @@ void extract_int64(uint8_t** nextbuf, int64_t* val)
 	(*nextbuf) += 8;
 }
 
-void extract_string(uint8_t** nextbuf, char* str)
+void extract_string(uint8_t** nextbuf, uint8_t* str)
 {
 	uint16_t len = 0;
 	extract_uint16(nextbuf, &len);
-	movebytes((uint8_t*)str, *nextbuf, len);
+	movebytes(str, *nextbuf, len);
 	str[len] = '\0';
 	(*nextbuf) += len;
 }

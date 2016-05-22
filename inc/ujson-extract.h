@@ -44,7 +44,7 @@ void extract_int32(uint8_t** nextbuf, int32_t* val);
 void extract_uint64(uint8_t** nextbuf, uint64_t* val);
 void extract_int64(uint8_t** nextbuf, int64_t* val);
 
-void extract_string(uint8_t** nextbuf, char* str);
+void extract_string(uint8_t** nextbuf, uint8_t* str);
 
 void extract_float(uint8_t** nextbuf, float* val);
 void extract_double(uint8_t** nextbuf, double* val);
