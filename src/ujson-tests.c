@@ -35,6 +35,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stddef.h>
 
 #ifdef NDEBUG
 #undef NDEBUG
@@ -47,6 +48,9 @@
 #include "movebytes.h"
 #include "hash.h"
 #include "str.h"
+#include "ujson-parse.h"
+#include "ujson-types.h"
+#include "ujvalues.h"
 
 // Change output routine here for serial output on embedded, etc.
 void print(char* s)
@@ -516,9 +520,35 @@ int main(int ARGC, char* ARGV[])
 	assert( test_str2 == NULL );
 
 	print("str_from()\n");
-	test_str2 = str_from(TEST_STRING_1);
+	test_str2 = str_from((uint8_t*)TEST_STRING_1);
 	assert( test_str2->length = strlen(TEST_STRING_1) );
 	assert( str_eq(test_str1, test_str2) );
+
+	/****************** parse *************/
+
+	ujvalue* v;
+	v = NULL;
+
+	print("parse(true)\n");
+	bot = (uint8_t*)"t";
+	v = parse(&bot, 1);
+	assert( v->type == uj_true );
+
+	print("ujvalue_release()\n");
+	ujvalue_release(&v);
+	assert( v == NULL );
+
+	print("parse(false)\n");
+	bot = (uint8_t*)"f";
+	v = parse(&bot, 1);
+	assert( v->type == uj_false );
+	ujvalue_release(&v);
+
+	print("parse(null)\n");
+	bot = (uint8_t*)"n";
+	v = parse(&bot, 1);
+	assert( v->type == uj_null );
+	ujvalue_release(&v);
 
 	// TODO: more tests!
 

@@ -31,25 +31,25 @@
 #ifndef _UJSON_SCHEMATAGS_H
 #define _UJSON_SCHEMATAGS_H
 
-#ifndef _STDINT_H
-	#include <stdint.h>
-#endif
+enum schematags {
+	uj_bool_true_tag  = 't',
+	uj_bool_false_tag = 'f',
+	uj_null_tag       = 'n',
+	uj_uint8_tag      = 'C',
+	uj_int8_tag       = 'c',
+	uj_uint16_tag     = 'W',
+	uj_int16_tag      = 'w',
+	uj_uint32_tag     = 'I',
+	uj_int32_tag      = 'i',
+	uj_uint64_tag     = 'Q',
+	uj_int64_tag      = 'q',
+	uj_string_tag     = 's',
+	uj_float_tag      = 'd',
+	uj_double_tag     = 'D',
+	uj_array_tag      = 'a',
+	uj_object_tag     = 'o'
+};
 
-#define UJ_BOOL_TRUE_TAG  ((uint8_t)'t')
-#define UJ_BOOL_FALSE_TAG ((uint8_t)'f')
-#define UJ_NULL_TAG       ((uint8_t)'n')
-#define UJ_UINT8_TAG      ((uint8_t)'C')
-#define UJ_INT8_TAG       ((uint8_t)'c')
-#define UJ_UINT16_TAG     ((uint8_t)'W')
-#define UJ_INT16_TAG      ((uint8_t)'w')
-#define UJ_UINT32_TAG     ((uint8_t)'I')
-#define UJ_INT32_TAG      ((uint8_t)'i')
-#define UJ_UINT64_TAG     ((uint8_t)'Q')
-#define UJ_INT64_TAG      ((uint8_t)'q')
-#define UJ_STRING_TAG     ((uint8_t)'s')
-#define UJ_FLOAT_TAG      ((uint8_t)'d')
-#define UJ_DOUBLE_TAG     ((uint8_t)'D')
-#define UJ_ARRAY_TAG      ((uint8_t)'a')
-#define UJ_OBJECT_TAG     ((uint8_t)'o')
+typedef enum schematags schematag;
 
 #endif

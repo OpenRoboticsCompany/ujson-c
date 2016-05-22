@@ -24,6 +24,9 @@
   *
   * ujson-parse.c
   * Parsing functions - de-serialize elements from ujson format
+  * This is appropriate for parsing dynamic objects of unknown size or form,
+  * and uses malloc. For a very small embedded system, it's better to use a
+  * flat decoder and a fixed format.
   *
   */
 
@@ -31,37 +34,48 @@
 #include "movebytes.h"
 #include "ujson-parse.h"
 #include "ujson-extract.h"
-#include "schematags.h"
 #include "ujsizes.h"
+#include "schematags.h"
+#include "ujson-types.h"
+#include "ujvalues.h"
 
-void parse(uint8_t** destbuf, uint16_t destsize, uint8_t** srcbuf, uint16_t srclen)
+ujvalue* parse(uint8_t** buf, uint16_t len)
 {
-	uint8_t* srcbuf_start = *srcbuf;
+	ujvalue* v;
+	v = ujvalue_new();
+	schematag t;
 
-/*
-	while (*srcbuf - (*srcbuf_start + len)) {
-		// not at end yet
-		switch(derp) {
-			//case UJ_BOOL_TRUE_TAG:
-			//case UJ_BOOL_FALSE_TAG:
-			//case UJ_NULL_TAG:
-			//case UJ_UINT8_TAG:
-			//case UJ_INT8_TAG:
-			//case UJ_UINT16_TAG:
-			//case UJ_INT16_TAG:
-			//case UJ_UINT32_TAG:
-			//case UJ_INT32_TAG:
-			//case UJ_UINT64_TAG:
-			//case UJ_INT64_TAG:
-			//case UJ_STRING_TAG:
-			//case UJ_FLOAT_TAG:
-			//case UJ_DOUBLE_TAG:
-			//case UJ_ARRAY_TAG: //parse can call itself here, srcbuf** will step along. just pass new srclen
-			//case UJ_OBJECT_TAG:
+	while (len--) {
+		t = (schematag)**buf;
+		(*buf)++;
+		switch(t) {
+			case uj_bool_true_tag:
+				v->type = uj_true;
+				break;
+			case uj_bool_false_tag:
+				v->type = uj_false;
+				break;
+			case uj_null_tag:
+				v->type = uj_null;
+				break;
+			//case uj_uint8_tag:
+			//case uj_int8_tag:
+			//case uj_uint16_tag:
+			//case uj_int16_tag:
+			//case uj_uint32_tag:
+			//case uj_int32_tag:
+			//case uj_uint64_tag:
+			//case uj_int64_tag:
+			//case uj_string_tag:
+			//case uj_float_tag:
+			//case uj_double_tag:
+			//case uj_array_tag: //parse can call itself here, srcbuf** will step along. just pass new srclen
+			//case uj_object_tag:
 			default:
+				break;
 		}
 	}
-*/
+	return v;
 }
 
 

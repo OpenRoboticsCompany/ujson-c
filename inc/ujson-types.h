@@ -22,18 +22,70 @@
   * Part of ujson-c - Implements microjson in C - see ujson.org
   * and https://github.com/aaronkondziela/ujson-c/
   *
-  * ujson-parse.h
+  * ujson-types.h
   *
   */
 
-#ifndef _UJ_PARSE_H
-#define _UJ_PARSE_H
+#ifndef _UJ_TYPES_H
+#define _UJ_TYPES_H
 
-#include <stdint.h>
-#include "ujson-types.h"
-#include "ujvalues.h"
+enum ujtype {
+	uj_string,
+	uj_number,
+	uj_object,
+	uj_array,
+	uj_true,
+	uj_false,
+	uj_null
+};
 
-ujvalue* parse(uint8_t** buf, uint16_t len);
+enum ujnumbertype {
+	uj_uint8,
+	uj_int8,
+	uj_uint16,
+	uj_int16,
+	uj_uint32,
+	uj_int32,
+	uj_uint64,
+	uj_int64,
+	uj_float,
+	uj_double
+};
+
+typedef struct ujvalue ujvalue;
+typedef struct ujobject ujobject;
+typedef struct ujarray ujarray;
+
+struct ujvalue {
+	enum ujtype type;
+	enum ujnumbertype numbertype;
+	union {
+		ujobject* object;
+		ujarray* array;
+		uint8_t* string;
+		uint8_t ui8;
+		int8_t i8;
+		uint16_t ui16;
+		int16_t i16;
+		uint32_t ui32;
+		int32_t i32;
+		uint64_t ui64;
+		int64_t i64;
+		float f;
+		double d;
+	} data_as;
+};
+
+struct ujobject {
+	int placeholder; // dict here
+};
+
+struct ujarray {
+	int placeholder; // list here
+};
+
 
 #endif
+
+
 
