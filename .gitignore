@@ -8,6 +8,7 @@ udptarget.h
 ujson-dev
 ujson-tests
 banner.txt
+todo.txt
 
 # Object files
 *.o
