@@ -22,13 +22,14 @@
   * Part of ujson-c - Implements microjson in C - see ujson.org
   * and https://github.com/aaronkondziela/ujson-c/
   *
-  * ujvalues.c
+  * ujson-values.c
   *
   */
 
 #include <stdint.h>
 #include <stdlib.h>
 #include "ujson-types.h"
+#include "ujson-values.h"
 
 ujvalue* ujvalue_new()
 {

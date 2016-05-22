@@ -22,7 +22,7 @@
   * Part of ujson-c - Implements microjson in C - see ujson.org
   * and https://github.com/aaronkondziela/ujson-c/
   *
-  * ujvalues.h
+  * ujson-values.h
   *
   */
 

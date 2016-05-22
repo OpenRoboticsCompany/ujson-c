@@ -50,7 +50,7 @@
 #include "str.h"
 #include "ujson-parse.h"
 #include "ujson-types.h"
-#include "ujvalues.h"
+#include "ujson-values.h"
 
 // Change output routine here for serial output on embedded, etc.
 void print(char* s)
