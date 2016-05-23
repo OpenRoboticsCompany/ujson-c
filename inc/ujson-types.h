@@ -34,7 +34,7 @@
 #include "str.h"
 
 enum ujtype {
-	uj_string,
+	uj_string = 0,
 	uj_number,
 	uj_object,
 	uj_array,
@@ -44,7 +44,7 @@ enum ujtype {
 };
 
 enum ujnumbertype {
-	uj_uint8,
+	uj_uint8 = 0,
 	uj_int8,
 	uj_uint16,
 	uj_int16,
@@ -60,9 +60,10 @@ typedef struct ujvalue ujvalue;
 typedef struct ujobject ujobject;
 typedef struct ujarray ujarray;
 
-struct ujvalue {
-	enum ujtype type;
-	enum ujnumbertype numbertype;
+// Tune for your application if needed. e.g.:
+// - Make type and numbertype 4-bit-wide bitfields to shave a byte off
+// - Remove packed attribute to get 64-bit alignment
+struct __attribute__ ((__packed__)) ujvalue {
 	union {
 		ujobject* object;
 		ujarray* array;
@@ -78,6 +79,8 @@ struct ujvalue {
 		float f;
 		double d;
 	} data_as;
+	uint8_t type;
+	uint8_t numbertype;
 };
 
 struct ujobject {
