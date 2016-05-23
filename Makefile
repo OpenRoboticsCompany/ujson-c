@@ -1,4 +1,3 @@
-# TODO: get header deps working
 # TODO: move bins to a bin dir, add to gitignore
 # TODO: library build?
 
@@ -10,7 +9,7 @@ _EXESRC=ujson-dev.c
 TESTS=ujson-tests
 _TESTSSRC=ujson-tests.c
 
-# Header file dependencies
+# Header file dependencies (TODO not used right now)
 _DEPS=list.h ujson-array.h ujson-values.h ujson-types.h str.h hash.h ujson-encode.h ujson-extract.h ujson-data.h ujson-parse.h hexdump.h endian.h udp.h schematags.h ujsizes.h movebytes.h
 IDIR=inc
 DEPS=$(pasubst %,$(IDIR)/%,$(_DEPS))
@@ -24,13 +23,21 @@ TESTSSRC=$(patsubst %,$(SDIR)/%,$(_TESTSSRC))
 
 _OBJECTS=$(_SOURCES:.c=.o)
 ODIR=obj
+$(shell mkdir -p $(ODIR) >/dev/null)
 OBJECTS=$(patsubst %,$(ODIR)/%,$(_OBJECTS))
 EXEOBJ=$(patsubst %,$(ODIR)/%,$(_EXESRC:.c=.o))
 TESTSOBJ=$(patsubst %,$(ODIR)/%,$(_TESTSSRC:.c=.o))
 
+_D=$(_OBJECTS:.o=.d) $(EXE).d $(TESTS).d
+DDIR=d
+$(shell mkdir -p $(DDIR) >/dev/null)
+D=$(patsubst %,$(DDIR)/%,$(_D))
+
 CC=gcc
-CFLAGS=-g -Wall -I$(IDIR) -std=c99 -c
+CFLAGS=-g -Wall -I$(IDIR) -std=c99
 LDFLAGS=
+DEPFLAGS=-MT $@ -MMD -MP -MF $(DDIR)/$*.Td
+POSTCOMPILE=mv -f $(DDIR)/$*.Td $(DDIR)/$*.d
 
 # TODO During dev this builds and runs the dev exe for the default make cmd
 all: $(SOURCES) $(EXESRC) $(EXE) runit
@@ -38,8 +45,9 @@ all: $(SOURCES) $(EXESRC) $(EXE) runit
 runit:
 	./$(EXE)
 
-$(ODIR)/%.o: $(SDIR)/%.c $(DEPS)
-	$(CC) $(CFLAGS) $< -o $@
+$(ODIR)/%.o: $(SDIR)/%.c
+	$(CC) $(DEPFLAGS) $(CFLAGS) -c $< -o $@
+	$(POSTCOMPILE)
 
 $(EXE): $(OBJECTS) $(EXEOBJ)
 	$(CC) $(LDFLAGS) $(OBJECTS) $(EXEOBJ) -o $@
@@ -49,4 +57,6 @@ tests: $(OBJECTS) $(TESTSOBJ)
 	./$(TESTS)
 
 .PHONY clean:
-	rm -f $(OBJECTS) $(EXE) $(EXEOBJ) $(TESTSOBJ) $(TESTS)
+	rm -f $(OBJECTS) $(EXE) $(EXEOBJ) $(TESTSOBJ) $(TESTS) $(D)
+
+-include $(D)
