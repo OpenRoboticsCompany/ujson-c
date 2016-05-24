@@ -22,7 +22,7 @@
   * Part of ujson-c - Implements microjson in C - see ujson.org
   * and https://github.com/aaronkondziela/ujson-c/
   *
-  * list.h
+  * ujson-array.h
   *
   */
 
@@ -30,23 +30,25 @@
 #define _UJ_LIST_H
 
 #include <stdint.h>
+#include "ujson-values.h"
 
-typedef struct ujlist ujlist;
-struct ujlist {
+typedef struct ujvalue ujvalue;
+typedef struct ujarray ujarray;
+
+struct ujarray {
 	uint16_t start;
 	uint16_t end;
 	uint16_t size;
-	ujvalue values[0];
+	ujvalue* values[0];
 };
 
-ujlist* list_allot(uint16_t len);
-uint16_t list_length(ujlist* l);
-void list_push(ujlist* l, ujvalue* v);
-void list_pop(ujlist* l, ujvalue* v);
-void list_each(ujlist* l, void(*f)(ujvalue* v));
-ujlist* list_map(ujlist* l, ujvalue*(*f)(ujvalue* v));
-static void _list_chain_release(ujvalue* v);
-void list_release(ujlist** l);
+ujarray* array_allot(uint16_t len);
+uint16_t array_length(ujarray* a);
+void array_push(ujarray* a, ujvalue* v);
+void array_pop(ujarray* a, ujvalue* v);
+void array_each(ujarray* a, void(*f)(ujvalue** v));
+ujarray* array_map(ujarray* a, ujvalue*(*f)(ujvalue* v));
+void array_release(ujarray** a);
 
 #endif
 

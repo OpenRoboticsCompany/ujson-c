@@ -524,13 +524,13 @@ int main(int ARGC, char* ARGV[])
 
 	/****************** array ************/
 
-	print("uj_arraylen()\n");
+	print("parse_arraylen()\n");
 	bot = (uint8_t*)"\x61\x00\x4e\x63\x01\x77\x01\x00\x69\x00\x01\x00\x00\x51\x00\x00\x00\x01\x00\x00\x00\x00\x73\x00\x04\x61\x73\x64\x66\x63\xff\x77\xff\x00\x69\xff\xff\x00\x00\x71\xff\xff\xff\xff\x00\x00\x00\x00\x61\x00\x04\x63\x01\x63\x02\x6f\x00\x0b\x00\x03\x6b\x65\x79\x73\x00\x03\x76\x61\x6c\x63\x01\x74\x66\x6e\x73\x00\x04\x71\x77\x65\x72";
 	// [1,256,65536,4294967296,<<"asdf">>,-1,-256,-65536,-4294967296,[1,2],[{<<"key">>,<<"val">>}],1,true,false,null,<<"qwer">>]
 	bot += 1; // trim the 'a' schematag
 	#define ARRAY_TERMS 16
 	u16a = 0;
-	u16a = uj_arraylen(&bot);
+	u16a = parse_arraylen(&bot);
 	assert( u16a == ARRAY_TERMS );
 
 	/****************** parse *************/

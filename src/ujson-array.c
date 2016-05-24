@@ -22,68 +22,67 @@
   * Part of ujson-c - Implements microjson in C - see ujson.org
   * and https://github.com/aaronkondziela/ujson-c/
   *
-  * list.c
+  * ujson-array.c
   *
   */
 
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
-#include "ujson-types.h"
 #include "ujson-values.h"
-#include "list.h"
+#include "ujson-array.h"
 
-ujlist* list_allot(uint16_t len)
+ujarray* array_allot(uint16_t len)
 {
-	ujlist* l;
+	ujarray* a;
 	if (!len) return NULL;
-	l = (ujlist*)calloc(1, sizeof(ujlist) + sizeof(ujvalue) * len);
-	l->size = len;
-	l->start = 0;
-	l->end = 0;
-	return l;
+	a = (ujarray*)calloc(1, sizeof(ujarray) + sizeof(ujvalue) * len);
+	a->size = len;
+	a->start = 0;
+	a->end = 0;
+	return a;
 }
 
-uint16_t list_length(ujlist* l)
+uint16_t array_length(ujarray* a)
 {
-	return l->end - l->start;
+	return a->end - a->start;
 }
 
-void list_push(ujlist* l, ujvalue* v)
+void array_push(ujarray* a, ujvalue* v)
 {
-	memcpy(&l->values[l->end++ % l->size], v, sizeof(ujvalue));
+	//memcpy(a->values[a->end++ % a->size], v, sizeof(ujvalue));
 }
 
-void list_pop(ujlist* l, ujvalue* v)
+void array_pop(ujarray* a, ujvalue* v)
 {
-	memcpy(v, &l->values[--l->end % l->size], sizeof(ujvalue));
+	//memcpy(v, a->values[--a->end % a->size], sizeof(ujvalue));
 }
 
-void list_each(ujlist* l, void(*f)(ujvalue* v))
+void array_each(ujarray* a, void(*f)(ujvalue** v))
 {
 	uint16_t i;
-	for (i = l->start; i < l->end; i++) f(&l->values[i % l->size]);
+	for (i = a->start; i < a->end; i++) f(&a->values[i % a->size]);
 }
 
-ujlist* list_map(ujlist* l, ujvalue*(*f)(ujvalue* v))
+ujarray* array_map(ujarray* a, ujvalue*(*f)(ujvalue* v))
 {
-	ujlist* l2;
-	l2 = list_allot(list_length(l));
+	uint16_t i;
+	ujarray* a2;
 	ujvalue* v2;
-	uint16_t i;
-	for (i = l->start; i < l->end; i++) {
-		v2 = f(&l->values[i % l->size]);
-		list_push(l2, v2);
+	a2 = array_allot(array_length(a));
+	for (i = a->start; i < a->end; i++) {
+		v2 = f(a->values[i % a->size]);
+		array_push(a2, v2);
 		ujvalue_release(&v2);
 	}
-	return l2;
+	return a2;
 }
 
-static void _list_chain_release(ujvalue* v)
+static void _array_chain_release(ujvalue** v)
 {
-	switch(v->type) {
+	switch((*v)->type) {
 		case uj_string:
-			str_release(&v->data_as.string);
+			str_release(&(*v)->data_as.string);
 			break;
 		case uj_array:
 			// TODO list_release(&v->data_as.array);
@@ -94,10 +93,10 @@ static void _list_chain_release(ujvalue* v)
 	}
 }
 
-void list_release(ujlist** l)
+void array_release(ujarray** a)
 {
-	list_each(*l, _list_chain_release);
-	free(*l);
-	*l = NULL;
+	array_each(*a, _array_chain_release);
+	free(*a);
+	*a = NULL;
 }
 
