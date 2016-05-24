@@ -42,7 +42,6 @@
 ujvalue* parse(uint8_t** buf, uint16_t len)
 {
 	ujvalue* v;
-	v = ujvalue_new();
 	schematag t;
 	uint8_t* start;
 	start = *buf;
@@ -53,55 +52,67 @@ ujvalue* parse(uint8_t** buf, uint16_t len)
 		(*buf)++;
 		switch(t) {
 			case uj_bool_true_tag:
+				v = ujvalue_new();
 				v->type = uj_true;
 				break;
 			case uj_bool_false_tag:
+				v = ujvalue_new();
 				v->type = uj_false;
 				break;
 			case uj_null_tag:
+				v = ujvalue_new();
 				v->type = uj_null;
 				break;
 			case uj_uint8_tag:
+				v = ujvalue_new();
 				v->type = uj_number;
 				v->numbertype = uj_uint8;
 				extract_uint8(buf, &v->data_as.uint8);
 				break;
 			case uj_int8_tag:
+				v = ujvalue_new();
 				v->type = uj_number;
 				v->numbertype = uj_int8;
 				extract_int8(buf, &v->data_as.int8);
 				break;
 			case uj_uint16_tag:
+				v = ujvalue_new();
 				v->type = uj_number;
 				v->numbertype = uj_uint16;
 				extract_uint16(buf, &v->data_as.uint16);
 				break;
 			case uj_int16_tag:
+				v = ujvalue_new();
 				v->type = uj_number;
 				v->numbertype = uj_int16;
 				extract_int16(buf, &v->data_as.int16);
 				break;
 			case uj_uint32_tag:
+				v = ujvalue_new();
 				v->type = uj_number;
 				v->numbertype = uj_uint32;
 				extract_uint32(buf, &v->data_as.uint32);
 				break;
 			case uj_int32_tag:
+				v = ujvalue_new();
 				v->type = uj_number;
 				v->numbertype = uj_int32;
 				extract_int32(buf, &v->data_as.int32);
 				break;
 			case uj_uint64_tag:
+				v = ujvalue_new();
 				v->type = uj_number;
 				v->numbertype = uj_uint64;
 				extract_uint64(buf, &v->data_as.uint64);
 				break;
 			case uj_int64_tag:
+				v = ujvalue_new();
 				v->type = uj_number;
 				v->numbertype = uj_int64;
 				extract_int64(buf, &v->data_as.int64);
 				break;
 			case uj_string_tag:
+				v = ujvalue_new();
 				v->type = uj_string;
 				extract_uint16(buf, &sl);
 				v->data_as.string = str_allot(sl);
@@ -109,11 +120,13 @@ ujvalue* parse(uint8_t** buf, uint16_t len)
 				extract_string(buf, v->data_as.string->data);
 				break;
 			case uj_float_tag:
+				v = ujvalue_new();
 				v->type = uj_number;
 				v->numbertype = uj_float;
 				extract_float(buf, &v->data_as.f);
 				break;
 			case uj_double_tag:
+				v = ujvalue_new();
 				v->type = uj_number;
 				v->numbertype = uj_double;
 				extract_double(buf, &v->data_as.d);
