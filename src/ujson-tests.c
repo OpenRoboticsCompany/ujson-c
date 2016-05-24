@@ -49,7 +49,6 @@
 #include "hash.h"
 #include "str.h"
 #include "ujson-parse.h"
-#include "ujson-types.h"
 #include "ujson-values.h"
 #include "ujson-array.h"
 

@@ -36,7 +36,6 @@
 #include "ujson-extract.h"
 #include "ujsizes.h"
 #include "schematags.h"
-#include "ujson-types.h"
 #include "ujson-values.h"
 #include "str.h"
 
