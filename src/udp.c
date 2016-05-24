@@ -45,6 +45,10 @@
 #warning "DEST_PORT not defined in udptarget.h - using default"
 #define DEST_PORT 7777
 #endif
+#ifndef LISTEN_PORT
+#warning "LISTEN_PORT not defined in udptarget.h - using default"
+#define LISTEN_PORT 6666
+#endif
 
 
 // quick and dirty udp sender for testing
@@ -62,3 +66,19 @@ void xmit(uint8_t* buf, uint16_t len)
 	close(s);
 }
 
+int rec(uint8_t* buf, int buflen)
+{
+	int s, n;
+	struct sockaddr_in addr;
+	struct sockaddr_in remaddr;
+	memset((char*)&addr, 0, sizeof(addr));
+	addr.sin_family = AF_INET;
+	addr.sin_port = htons(LISTEN_PORT);
+	addr.sin_addr.s_addr = htonl(INADDR_ANY);
+	s = socket(AF_INET, SOCK_DGRAM, 0);
+	bind(s, (struct sockaddr *)&addr, sizeof(addr));
+	socklen_t addrlen = sizeof(remaddr);
+	n = recvfrom(s, buf, buflen, 0, (struct sockaddr *)&remaddr, &addrlen);
+	close(s);
+	return n;
+}

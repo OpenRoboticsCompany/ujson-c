@@ -46,11 +46,22 @@
 #include "ujson-values.h"
 #include "ujson-array.h"
 #include "ujson-dump.h"
+#include "ujson-parse.h"
 
 int main(int argc, char* argv[])
 {
-	printf("Running ujson dev rig.\n");
-	
+	printf("\n\n*********************\nRunning ujson dev rig.\n");
+	printf("Listening for udp...\n");
+	int n;
+	unsigned char buffer[65536];
+	n = rec(buffer, 65536);
+	printf("recevied %u bytes\n",n);
+	ujvalue* parsedv;
+	uint8_t* buf = (uint8_t*)buffer;
+	parsedv = parse(&buf);
+	ujdump(parsedv);
+	return 0;
+
 	ujarray* lp = 0;
 	lp = array_allot(10);
 
