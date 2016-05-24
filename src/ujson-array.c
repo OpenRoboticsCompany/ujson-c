@@ -36,7 +36,7 @@ ujarray* array_allot(uint16_t len)
 {
 	ujarray* a;
 	if (!len) return NULL;
-	a = (ujarray*)calloc(1, sizeof(ujarray) + sizeof(ujvalue) * len);
+	a = (ujarray*)calloc(1, sizeof(ujarray) + sizeof(ujvalue*) * len);
 	a->size = len;
 	a->start = 0;
 	a->end = 0;
@@ -48,20 +48,33 @@ uint16_t array_length(ujarray* a)
 	return a->end - a->start;
 }
 
-void array_push(ujarray* a, ujvalue* v)
+ujarray* array_push(ujarray* a, ujvalue* v)
 {
-	//memcpy(a->values[a->end++ % a->size], v, sizeof(ujvalue));
+	a->values[a->end++ % a->size] = v;
+	return a;
 }
 
-void array_pop(ujarray* a, ujvalue* v)
+ujvalue* array_pop(ujarray* a)
 {
-	//memcpy(v, a->values[--a->end % a->size], sizeof(ujvalue));
+	ujvalue* v;
+	v = a->values[--a->end % a->size];
+	a->values[a->end % a->size] = NULL;
+	return v;
 }
 
-void array_each(ujarray* a, void(*f)(ujvalue** v))
+ujvalue* array_shift(ujarray* a)
+{
+	ujvalue* v;
+	v = a->values[a->start++ % a->size];
+	a->values[(a->start - 1) % a->size] = NULL;
+	return v;
+}
+
+ujarray* array_each(ujarray* a, void(*f)(ujvalue** v))
 {
 	uint16_t i;
 	for (i = a->start; i < a->end; i++) f(&a->values[i % a->size]);
+	return a;
 }
 
 ujarray* array_map(ujarray* a, ujvalue*(*f)(ujvalue* v))
@@ -73,7 +86,6 @@ ujarray* array_map(ujarray* a, ujvalue*(*f)(ujvalue* v))
 	for (i = a->start; i < a->end; i++) {
 		v2 = f(a->values[i % a->size]);
 		array_push(a2, v2);
-		ujvalue_release(&v2);
 	}
 	return a2;
 }
@@ -85,7 +97,7 @@ static void _array_chain_release(ujvalue** v)
 			str_release(&(*v)->data_as.string);
 			break;
 		case uj_array:
-			// TODO list_release(&v->data_as.array);
+			array_release(&(*v)->data_as.array);
 			break;
 		case uj_object:
 			// TODO object_release(&v->data_as.object);
@@ -95,6 +107,7 @@ static void _array_chain_release(ujvalue** v)
 
 void array_release(ujarray** a)
 {
+	if (!(*a)) return;
 	array_each(*a, _array_chain_release);
 	free(*a);
 	*a = NULL;

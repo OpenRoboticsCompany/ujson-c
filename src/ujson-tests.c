@@ -533,6 +533,137 @@ int main(int ARGC, char* ARGV[])
 	u16a = parse_arraylen(&bot);
 	assert( u16a == ARRAY_TERMS );
 
+	{
+	print("array_allot()\n");
+	ujarray* uja = 0;
+	uja = array_allot(3);
+	assert(uja->size == 3);
+	assert(uja->start == 0);
+	assert(uja->end == 0);
+	assert(array_length(uja) == 0);
+
+	print("array_push()\n");
+	ujvalue* v;
+	v = ujvalue_new();
+	v->type = uj_number;
+	v->numbertype = uj_uint8;
+	v->data_as.uint8 = 0xAA;
+	array_push(uja, v);
+	assert(uja->size == 3);
+	assert(uja->start == 0);
+	assert(uja->end == 1);
+	assert(uja->values[0]->data_as.uint8 == 0xAA);
+	assert(array_length(uja) == 1);
+
+	print("array_push()\n");
+	v = ujvalue_new();
+	v->type = uj_number;
+	v->numbertype = uj_uint32;
+	v->data_as.uint32 = 0xBBBBBBBB;
+	array_push(uja, v);
+	assert(uja->size == 3);
+	assert(uja->start == 0);
+	assert(uja->end == 2);
+	assert(uja->values[0]->data_as.uint8 == 0xAA);
+	assert(uja->values[1]->data_as.uint32 == 0xBBBBBBBB);
+	assert(array_length(uja) == 2);
+
+	print("array_push()\n");
+	v = ujvalue_new();
+	v->type = uj_number;
+	v->numbertype = uj_uint16;
+	v->data_as.uint16 = 0xCCCC;
+	array_push(uja, v);
+	assert(uja->size == 3);
+	assert(uja->start == 0);
+	assert(uja->end == 3);
+	assert(uja->values[0]->data_as.uint8 == 0xAA);
+	assert(uja->values[1]->data_as.uint32 == 0xBBBBBBBB);
+	assert(uja->values[2]->data_as.uint16 == 0xCCCC);
+	assert(array_length(uja) == 3);
+
+	print("array_each()\n");
+	// anon func is gcc only
+	void (*f)(ujvalue** v) =
+		({ void __fn__ (ujvalue** v) {
+		 	switch((*v)->numbertype) {
+				case uj_uint8:
+					(*v)->data_as.uint8++; break;
+				case uj_uint16:
+					(*v)->data_as.uint16++; break;
+				case uj_uint32:
+					(*v)->data_as.uint32++; break;
+			}
+		}__fn__;
+		});
+	array_each(uja, f);
+	assert(uja->values[0]->data_as.uint8 == 0xAB);
+	assert(uja->values[1]->data_as.uint32 == 0xBBBBBBBC);
+	assert(uja->values[2]->data_as.uint16 == 0xCCCD);
+
+	print("array_map()\n");
+	// anon func is gcc only
+	ujvalue* (*m)(ujvalue* v) =
+		({ ujvalue* __fn__ (ujvalue* v) {
+		 	ujvalue* v2;
+			v2 = ujvalue_new();
+			v2->type = uj_number;
+		 	switch(v->numbertype) {
+				case uj_uint8:
+					v2->numbertype = uj_uint8;
+					v2->data_as.uint8 = v->data_as.uint8 + 1; break;
+				case uj_uint16:
+					v2->numbertype = uj_uint16;
+					v2->data_as.uint16 = v->data_as.uint16 + 1; break;
+				case uj_uint32:
+					v2->numbertype = uj_uint32;
+					v2->data_as.uint32 = v->data_as.uint32 + 1; break;
+			}
+			return v2;
+		}__fn__;
+		});
+	ujarray* ujb;
+	ujb = array_map(uja, m);
+	assert(ujb->size == 3);
+	assert(array_length(ujb) == 3);
+	assert(ujb->values[0]->data_as.uint8 == 0xAC);
+	assert(ujb->values[1]->data_as.uint32 == 0xBBBBBBBD);
+	assert(ujb->values[2]->data_as.uint16 == 0xCCCE);
+	array_release(&ujb);
+
+	print("array_pop()\n");
+	v = NULL;
+	v = array_pop(uja);
+	assert(uja->size == 3);
+	assert(uja->start == 0);
+	assert(uja->end == 2);
+	assert(uja->values[0]->data_as.uint8 == 0xAB);
+	assert(uja->values[1]->data_as.uint32 == 0xBBBBBBBC);
+	assert(uja->values[2] == NULL);
+	assert(v->data_as.uint16 = 0xCCCD);
+	assert(array_length(uja) == 2);
+	ujvalue_release(&v);
+	assert(v == NULL);
+
+	print("array_shift()\n");
+	v = array_shift(uja);
+	assert(uja->size == 3);
+	assert(uja->start == 1);
+	assert(uja->end == 2);
+	assert(uja->values[0] == NULL);
+	assert(uja->values[1]->data_as.uint32 == 0xBBBBBBBC);
+	assert(uja->values[2] == NULL);
+	assert(v->data_as.uint8 == 0xAB);
+	assert(array_length(uja) == 1);
+	ujvalue_release(&v);
+	assert(v == NULL);
+
+	print("array_release()\n");
+	array_release(&uja);
+	assert(uja == NULL);
+
+	}
+
 	/****************** parse *************/
 
 	ujvalue* v;
@@ -645,12 +776,7 @@ int main(int ARGC, char* ARGV[])
 	#undef TEST_STRING
 	#undef TEST_STRING_LEN
 
-	print("string release chained from value release\n");
-	str** str_release_check;
-	str_release_check = &v->data_as.string;
-	assert( *str_release_check );
 	ujvalue_release(&v);
-	assert( ! *str_release_check );
 
 	print("parse(float)\n");
 	bot = (uint8_t*)"d\x46\x40\xe6\xb7";

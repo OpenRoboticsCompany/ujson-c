@@ -44,9 +44,10 @@ struct ujarray {
 
 ujarray* array_allot(uint16_t len);
 uint16_t array_length(ujarray* a);
-void array_push(ujarray* a, ujvalue* v);
-void array_pop(ujarray* a, ujvalue* v);
-void array_each(ujarray* a, void(*f)(ujvalue** v));
+ujarray* array_push(ujarray* a, ujvalue* v);
+ujvalue* array_pop(ujarray* a);
+ujvalue* array_shift(ujarray* a);
+ujarray* array_each(ujarray* a, void(*f)(ujvalue** v));
 ujarray* array_map(ujarray* a, ujvalue*(*f)(ujvalue* v));
 void array_release(ujarray** a);
 
