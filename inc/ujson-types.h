@@ -29,10 +29,6 @@
 #ifndef _UJ_TYPES_H
 #define _UJ_TYPES_H
 
-#include <stdint.h>
-
-#include "str.h"
-
 enum ujtype {
 	uj_string = 0,
 	uj_number,
@@ -56,43 +52,5 @@ enum ujnumbertype {
 	uj_double
 };
 
-typedef struct ujvalue ujvalue;
-typedef struct ujobject ujobject;
-typedef struct ujarray ujarray;
-
-// Tune for your application if needed. e.g.:
-// - Make type and numbertype 4-bit-wide bitfields to shave a byte off
-// - Remove packed attribute to get 64-bit alignment
-struct __attribute__ ((__packed__)) ujvalue {
-	union {
-		ujobject* object;
-		ujarray* array;
-		str* string;
-		uint8_t uint8;
-		int8_t int8;
-		uint16_t uint16;
-		int16_t int16;
-		uint32_t uint32;
-		int32_t int32;
-		uint64_t uint64;
-		int64_t int64;
-		float f;
-		double d;
-	} data_as;
-	uint8_t type;
-	uint8_t numbertype;
-};
-
-struct ujobject {
-	int placeholder; // dict here
-};
-
-struct ujarray {
-	int placeholder; // list here
-};
-
-
 #endif
-
-
 
