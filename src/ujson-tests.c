@@ -671,7 +671,7 @@ int main(int ARGC, char* ARGV[])
 
 	print("parse(true)\n");
 	bot = (uint8_t*)"t";
-	v = parse(&bot, 1);
+	v = parse(&bot);
 	assert( v->type == uj_true );
 
 	print("ujvalue_release()\n");
@@ -680,20 +680,20 @@ int main(int ARGC, char* ARGV[])
 
 	print("parse(false)\n");
 	bot = (uint8_t*)"f";
-	v = parse(&bot, 1);
+	v = parse(&bot);
 	assert( v->type == uj_false );
 	ujvalue_release(&v);
 
 	print("parse(null)\n");
 	bot = (uint8_t*)"n";
-	v = parse(&bot, 1);
+	v = parse(&bot);
 	assert( v->type == uj_null );
 	ujvalue_release(&v);
 
 	print("parse(uint8)\n");
 	bot = (uint8_t*)"C\x7f\xAA";
 	u8a = 0x7f;
-	v = parse(&bot, 2);
+	v = parse(&bot);
 	assert( v->type == uj_number );
 	assert( v->numbertype == uj_uint8 );
 	assert( v->data_as.uint8 == u8a );
@@ -702,7 +702,7 @@ int main(int ARGC, char* ARGV[])
 	print("parse(int8)\n");
 	bot = (uint8_t*)"c\x81\xAA";
 	i8a = 0x81;
-	v = parse(&bot, 2);
+	v = parse(&bot);
 	assert( v->type == uj_number );
 	assert( v->numbertype == uj_int8 );
 	assert( v->data_as.int8 == i8a );
@@ -711,7 +711,7 @@ int main(int ARGC, char* ARGV[])
 	print("parse(uint16)\n");
 	bot = (uint8_t*)"W\x7f\xff\xAA";
 	u16a = 0x7fff;
-	v = parse(&bot, 3);
+	v = parse(&bot);
 	assert( v->type == uj_number );
 	assert( v->numbertype == uj_uint16 );
 	assert( v->data_as.uint16 == u16a );
@@ -720,7 +720,7 @@ int main(int ARGC, char* ARGV[])
 	print("parse(int16)\n");
 	bot = (uint8_t*)"w\x80\x02\xAA";
 	i16a = 0x8002;
-	v = parse(&bot, 3);
+	v = parse(&bot);
 	assert( v->type == uj_number );
 	assert( v->numbertype == uj_int16 );
 	assert( v->data_as.int16 == i16a );
@@ -729,7 +729,7 @@ int main(int ARGC, char* ARGV[])
 	print("parse(uint32)\n");
 	bot = (uint8_t*)"I\x7f\xff\xff\xff\xAA";
 	u32a = 0x7fffffff;
-	v = parse(&bot, 5);
+	v = parse(&bot);
 	assert( v->type == uj_number );
 	assert( v->numbertype == uj_uint32 );
 	assert( v->data_as.uint32 == u32a );
@@ -738,7 +738,7 @@ int main(int ARGC, char* ARGV[])
 	print("parse(int32)\n");
 	bot = (uint8_t*)"i\x80\x00\x00\x01\xAA";
 	i32a = 0x80000001;
-	v = parse(&bot, 5);
+	v = parse(&bot);
 	assert( v->type == uj_number );
 	assert( v->numbertype == uj_int32 );
 	assert( v->data_as.int32 == i32a );
@@ -747,7 +747,7 @@ int main(int ARGC, char* ARGV[])
 	print("parse(uint64)\n");
 	bot = (uint8_t*)"Q\x7f\xff\xff\xff\xff\xff\xff\xff\xAA";
 	u64a = 0x7fffffffffffffff;
-	v = parse(&bot, 9);
+	v = parse(&bot);
 	assert( v->type == uj_number );
 	assert( v->numbertype == uj_uint64 );
 	assert( v->data_as.uint64 == u64a );
@@ -756,7 +756,7 @@ int main(int ARGC, char* ARGV[])
 	print("parse(int64)\n");
 	bot = (uint8_t*)"q\x80\x00\x00\x00\x00\x00\x00\x03\xAA";
 	i64a = 0x8000000000000003;
-	v = parse(&bot, 9);
+	v = parse(&bot);
 	assert( v->type == uj_number );
 	assert( v->numbertype == uj_int64 );
 	assert( v->data_as.int64 == i64a );
@@ -767,7 +767,7 @@ int main(int ARGC, char* ARGV[])
 	#define TEST_STRING "if you have two strings do you call it twine?"
 	#define TEST_STRING_LEN 45
 	bot = (uint8_t*)"s\x00\x2D" TEST_STRING;
-	v = parse(&bot, TEST_STRING_LEN + 3);
+	v = parse(&bot);
 	assert( v->type == uj_string );
 	assert( v->data_as.string );
 	assert( v->data_as.string->data );
@@ -781,7 +781,7 @@ int main(int ARGC, char* ARGV[])
 	print("parse(float)\n");
 	bot = (uint8_t*)"d\x46\x40\xe6\xb7";
 	fa = (float)12345.6789;
-	v = parse(&bot, 5);
+	v = parse(&bot);
 	assert( v->type == uj_number );
 	assert( v->numbertype == uj_float );
 	assert( v->data_as.f == fa );
@@ -790,10 +790,51 @@ int main(int ARGC, char* ARGV[])
 	print("parse(double)\n");
 	bot = (uint8_t*)"D\x40\xc8\x1c\xd6\xe6\x31\xf8\xa1";
 	da = (double)12345.6789;
-	v = parse(&bot, 9);
+	v = parse(&bot);
 	assert( v->type == uj_number );
 	assert( v->numbertype == uj_double );
 	assert( v->data_as.d == da );
+	ujvalue_release(&v);
+
+	print("parse(array)\n");
+	bot = (uint8_t*)"a\x00\x0c\x43\xaa\x74\x57\xbb\xbb\x66\x49\xcc\xcc\xcc\xcc";
+	// [16#AA,true,16#BBBB,false,16#CCCCCCCC]
+	v = parse(&bot);
+	assert(v->type == uj_array);
+	assert(v->data_as.array->size == 5);
+	assert(v->data_as.array->values[0]->type == uj_number);
+	assert(v->data_as.array->values[0]->numbertype == uj_uint8);
+	assert(v->data_as.array->values[0]->data_as.uint8 == 0xAA);
+	assert(v->data_as.array->values[1]->type == uj_true);
+	assert(v->data_as.array->values[2]->type == uj_number);
+	assert(v->data_as.array->values[2]->numbertype == uj_uint16);
+	assert(v->data_as.array->values[2]->data_as.uint16 == 0xBBBB);
+	assert(v->data_as.array->values[3]->type == uj_false);
+	assert(v->data_as.array->values[4]->type == uj_number);
+	assert(v->data_as.array->values[4]->numbertype == uj_uint32);
+	assert(v->data_as.array->values[4]->data_as.uint32 == 0xCCCCCCCC);
+	ujvalue_release(&v);
+
+	print("parse(array of arrays)\n");
+	bot = (uint8_t*)"a\x00\x0e\x61\x00\x04\x63\x01\x63\x02\x61\x00\x04\x63\x03\x63\x04";
+	// [[1,2],[3,4]]
+	v = parse(&bot);
+	assert(v->type == uj_array);
+	assert(v->data_as.array->size == 2);
+	assert(v->data_as.array->values[0]->type == uj_array);
+	assert(v->data_as.array->values[1]->type == uj_array);
+	assert(v->data_as.array->values[0]->data_as.array->values[0]->type == uj_number);
+	assert(v->data_as.array->values[0]->data_as.array->values[0]->numbertype == uj_int8);
+	assert(v->data_as.array->values[0]->data_as.array->values[0]->data_as.int8 == 1);
+	assert(v->data_as.array->values[0]->data_as.array->values[1]->type == uj_number);
+	assert(v->data_as.array->values[0]->data_as.array->values[1]->numbertype == uj_int8);
+	assert(v->data_as.array->values[0]->data_as.array->values[1]->data_as.int8 == 2);
+	assert(v->data_as.array->values[1]->data_as.array->values[0]->type == uj_number);
+	assert(v->data_as.array->values[1]->data_as.array->values[0]->numbertype == uj_int8);
+	assert(v->data_as.array->values[1]->data_as.array->values[0]->data_as.int8 == 3);
+	assert(v->data_as.array->values[1]->data_as.array->values[1]->type == uj_number);
+	assert(v->data_as.array->values[1]->data_as.array->values[1]->numbertype == uj_int8);
+	assert(v->data_as.array->values[1]->data_as.array->values[1]->data_as.int8 == 4);
 	ujvalue_release(&v);
 
 	// TODO: more tests!

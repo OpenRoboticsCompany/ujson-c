@@ -34,7 +34,7 @@
 #include "ujson-values.h"
 
 uint16_t parse_arraylen(uint8_t** buf);
-ujvalue* parse(uint8_t** buf, uint16_t len);
+ujvalue* parse(uint8_t** buf);
 
 #endif
 
