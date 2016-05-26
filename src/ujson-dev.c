@@ -38,7 +38,7 @@
 #include "hexdump.h"
 #include "endian.h"
 #include "udp.h"
-#include "hash.h"
+#include "ujson-hash.h"
 #define STACKSTR_SIZE 123
 #include "str.h"
 #include "ujson-types.h"

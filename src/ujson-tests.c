@@ -46,7 +46,7 @@
 #include "ujson-extract.h"
 #include "endian.h"
 #include "movebytes.h"
-#include "hash.h"
+#include "ujson-hash.h"
 #include "str.h"
 #include "ujson-parse.h"
 #include "ujson-value.h"
