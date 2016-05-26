@@ -31,7 +31,7 @@
 
 #include <stdint.h>
 #include "ujson-types.h"
-#include "ujson-values.h"
+#include "ujson-value.h"
 
 uint16_t parse_arraylen(uint8_t** buf);
 ujvalue* parse(uint8_t** buf);

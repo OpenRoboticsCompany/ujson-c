@@ -49,7 +49,7 @@
 #include "hash.h"
 #include "str.h"
 #include "ujson-parse.h"
-#include "ujson-values.h"
+#include "ujson-value.h"
 #include "ujson-array.h"
 
 // Change output routine here for serial output on embedded, etc.

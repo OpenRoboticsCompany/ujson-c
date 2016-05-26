@@ -22,27 +22,46 @@
   * Part of ujson-c - Implements microjson in C - see ujson.org
   * and https://github.com/aaronkondziela/ujson-c/
   *
-  * ujson-values.c
+  * ujson-value.h
   *
   */
 
+#ifndef _UJ_VALUE_H
+#define _UJ_VALUE_H
+
 #include <stdint.h>
-#include <stdlib.h>
-#include "ujson-values.h"
+#include "str.h"
+#include "ujson-array.h"
+#include "ujson-types.h"
 
-ujvalue* ujvalue_new()
-{
-	ujvalue* v = calloc(1, sizeof(ujvalue));
-	v->type = uj_null;
-	return v;
-}
+typedef struct ujvalue ujvalue;
+typedef struct ujarray ujarray;
 
-void ujvalue_release(ujvalue** v)
-{
-	if (!(*v)) return;
-	if ((*v)->type == uj_string && (*v)->data_as.string) str_release(&(*v)->data_as.string);
-	if ((*v)->type == uj_array && (*v)->data_as.array) array_release(&(*v)->data_as.array);
-	// TODO chain-release objects
-	free(*v);
-	*v = NULL;
-}
+// Tune for your application if needed. e.g.:
+// - Make type and numbertype 4-bit-wide bitfields to shave a byte off
+// - Remove packed attribute to get 64-bit alignment
+struct __attribute__ ((__packed__)) ujvalue {
+	union {
+		ujvalue* object; //TODO change
+		ujarray* array;
+		str* string;
+		uint8_t uint8;
+		int8_t int8;
+		uint16_t uint16;
+		int16_t int16;
+		uint32_t uint32;
+		int32_t int32;
+		uint64_t uint64;
+		int64_t int64;
+		float f;
+		double d;
+	} data_as;
+	uint8_t type;
+	uint8_t numbertype;
+};
+
+ujvalue* ujvalue_new();
+void ujvalue_release(ujvalue** v);
+
+#endif
+

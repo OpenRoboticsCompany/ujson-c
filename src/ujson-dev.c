@@ -43,7 +43,7 @@
 #include "str.h"
 #include "ujson-types.h"
 #include "schematags.h"
-#include "ujson-values.h"
+#include "ujson-value.h"
 #include "ujson-array.h"
 #include "ujson-dump.h"
 #include "ujson-parse.h"
