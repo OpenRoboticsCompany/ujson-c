@@ -90,25 +90,10 @@ ujarray* array_map(ujarray* a, ujvalue*(*f)(ujvalue* v))
 	return a2;
 }
 
-static void _array_chain_release(ujvalue** v)
-{
-	switch((*v)->type) {
-		case uj_string:
-			str_release(&(*v)->data_as.string);
-			break;
-		case uj_array:
-			array_release(&(*v)->data_as.array);
-			break;
-		case uj_object:
-			// TODO object_release(&v->data_as.object);
-			break;
-	}
-}
-
 void array_release(ujarray** a)
 {
 	if (!(*a)) return;
-	array_each(*a, _array_chain_release);
+	array_each(*a, ujvalue_release);
 	free(*a);
 	*a = NULL;
 }
