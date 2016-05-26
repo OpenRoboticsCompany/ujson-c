@@ -30,7 +30,7 @@
 #define _UJ_LIST_H
 
 #include <stdint.h>
-#include "ujson-values.h"
+#include "ujson-value.h"
 
 typedef struct ujvalue ujvalue;
 typedef struct ujarray ujarray;

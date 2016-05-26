@@ -29,7 +29,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
-#include "ujson-values.h"
+#include "ujson-value.h"
 #include "ujson-array.h"
 
 ujarray* array_allot(uint16_t len)
