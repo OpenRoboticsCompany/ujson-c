@@ -89,10 +89,3 @@ str* str_from(uint8_t* src_buf)
 	return s;
 }
 
-void str_dup(str* dest, str* src)
-{
-	
-}
-
-
-
