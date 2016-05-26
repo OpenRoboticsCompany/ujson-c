@@ -39,7 +39,7 @@ struct ujarray {
 	uint16_t start;
 	uint16_t end;
 	uint16_t size;
-	ujvalue* values[0];
+	ujvalue* values[];
 };
 
 ujarray* array_allot(uint16_t len);

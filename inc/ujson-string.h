@@ -37,7 +37,7 @@ typedef struct {
 	uint8_t* data;
 	uint16_t length;
 	uint16_t max;
-	uint8_t buffer[0];
+	uint8_t buffer[];
 } str;
 
 typedef struct {
