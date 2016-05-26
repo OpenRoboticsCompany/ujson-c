@@ -29,7 +29,7 @@
 
 #include <stdint.h>
 #include "ujson-hash.h"
-#include "str.h"
+#include "ujson-string.h"
 
 uint16_t hash_buffer(const uint8_t* x, const uint16_t len)
 {

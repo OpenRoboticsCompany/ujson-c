@@ -40,7 +40,7 @@
 #include "udp.h"
 #include "ujson-hash.h"
 #define STACKSTR_SIZE 123
-#include "str.h"
+#include "ujson-string.h"
 #include "ujson-types.h"
 #include "schematags.h"
 #include "ujson-value.h"

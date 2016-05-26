@@ -22,7 +22,7 @@
   * Part of ujson-c - Implements microjson in C - see ujson.org
   * and https://github.com/aaronkondziela/ujson-c/
   *
-  * str.c
+  * ujson-string.c
   * Simple string handling
   *
   */
@@ -31,7 +31,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#include "str.h"
+#include "ujson-string.h"
 
 // You can undefine this to use strlen instead, but expecting UTF8 is sane for
 // json so don't do it unless you have a good reason.

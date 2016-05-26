@@ -22,12 +22,12 @@
   * Part of ujson-c - Implements microjson in C - see ujson.org
   * and https://github.com/aaronkondziela/ujson-c/
   *
-  * str.h
+  * ujson-string.h
   *
   */
 
-#ifndef _STR_H
-#define _STR_H
+#ifndef _UJ_STRING_H
+#define _UJ_STRING_H
 
 #include <stdint.h>
 

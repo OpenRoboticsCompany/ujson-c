@@ -36,7 +36,7 @@
 #include "schematags.h"
 #include "ujson-extract.h"
 #include "ujson-value.h"
-#include "str.h"
+#include "ujson-string.h"
 #include "ujson-parse.h"
 
 

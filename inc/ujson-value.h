@@ -30,7 +30,7 @@
 #define _UJ_VALUE_H
 
 #include <stdint.h>
-#include "str.h"
+#include "ujson-string.h"
 #include "ujson-array.h"
 #include "ujson-types.h"
 
