@@ -30,19 +30,21 @@
 #define _UJ_VALUE_H
 
 #include <stdint.h>
-#include "ujson-string.h"
-#include "ujson-array.h"
 #include "ujson-types.h"
+#include "ujson-string.h"
+#include "ujson-object.h"
+#include "ujson-array.h"
 
 typedef struct ujvalue ujvalue;
 typedef struct ujarray ujarray;
+typedef struct ujobject ujobject;
 
 // Tune for your application if needed. e.g.:
 // - Make type and numbertype 4-bit-wide bitfields to shave a byte off
 // - Remove packed attribute to get 64-bit alignment
 struct __attribute__ ((__packed__)) ujvalue {
 	union {
-		ujvalue* object; //TODO change
+		ujobject* object;
 		ujarray* array;
 		ujstring* string;
 		uint8_t uint8;

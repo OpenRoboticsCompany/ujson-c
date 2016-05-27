@@ -52,7 +52,6 @@ ujobject* object_set(ujobject* o, ujstring* k, ujvalue* v)
 	h = hash_string(k);
 	for (i = 0; i < o->size; i++) {
 		if (o->data[((h+i) % o->size) * 2] && !string_eq(k, (ujstring*)o->data[((h+i) % o->size) * 2])) continue;
-		printf("\n");
 		o->data[((h+i) % o->size) * 2] = k;
 		o->data[((h+i) % o->size) * 2 + 1] = v;
 		return o;

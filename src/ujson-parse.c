@@ -35,8 +35,10 @@
 #include "ujsizes.h"
 #include "schematags.h"
 #include "ujson-extract.h"
-#include "ujson-value.h"
 #include "ujson-string.h"
+#include "ujson-array.h"
+#include "ujson-object.h"
+#include "ujson-value.h"
 #include "ujson-parse.h"
 
 
@@ -174,7 +176,10 @@ ujvalue* parse(uint8_t** buf)
 				while (al--)
 					array_push(v->data_as.array, parse(buf));
 				break;
-			// TODO case uj_object_tag:
+			case uj_object_tag:
+				v->type = uj_object;
+				// TODO
+				break;
 			default:
 				break;
 		}

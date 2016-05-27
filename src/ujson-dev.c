@@ -39,7 +39,6 @@
 #include "endian.h"
 #include "udp.h"
 #include "ujson-hash.h"
-#define STACKSTR_SIZE 123
 #include "ujson-string.h"
 #include "ujson-types.h"
 #include "schematags.h"
@@ -47,10 +46,13 @@
 #include "ujson-array.h"
 #include "ujson-dump.h"
 #include "ujson-parse.h"
+#include "ujson-hash.h"
+#include "ujson-object.h"
 
 int main(int argc, char* argv[])
 {
 	printf("\n\n*********************\nRunning ujson dev rig.\n");
+
 	printf("Listening for udp...\n");
 	int n;
 	unsigned char buffer[65536];
@@ -61,55 +63,6 @@ int main(int argc, char* argv[])
 	parsedv = parse(&buf);
 	ujdump(parsedv);
 	return 0;
-
-	ujarray* lp = 0;
-	lp = array_allot(10);
-
-	ujvalue* mainv;
-	mainv = ujvalue_new();
-	mainv->type = uj_array;
-	mainv->data_as.array = lp;
-
-	ujvalue* v;
-	v = ujvalue_new();
-	v->type = uj_number;
-	v->numbertype = uj_uint64;
-	v->data_as.uint64 = 0xffffffffffffffff;
-	array_push(lp, v);
-
-	v = ujvalue_new();
-	v->type = uj_true;
-	array_push(lp, v);
-
-	v = ujvalue_new();
-	v->type = uj_string;
-	v->data_as.string = string_from((uint8_t*)"This is a test string");
-	array_push(lp, v);
-
-	v = ujvalue_new();
-	v->type = uj_array;
-	v->data_as.array = array_allot(3);
-	ujvalue* v2;
-	v2 = ujvalue_new(); v2->type = uj_string;
-	v2->data_as.string = string_from((uint8_t*)"String One");
-	array_push(v->data_as.array, v2); 
-	v2 = ujvalue_new(); v2->type = uj_string;
-	v2->data_as.string = string_from((uint8_t*)"String Two");
-	array_push(v->data_as.array, v2); 
-	v2 = ujvalue_new(); v2->type = uj_string;
-	v2->data_as.string = string_from((uint8_t*)"String Three");
-	array_push(v->data_as.array, v2); 
-	array_push(lp, v);
-
-	v = ujvalue_new();
-	v->type = uj_number;
-	v->numbertype = uj_uint32;
-	v->data_as.uint32 = 0x12345678;
-	array_push(lp, v);
-
-	ujdump(mainv);
-
-	return(0);
 }
 
 

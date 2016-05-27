@@ -661,6 +661,45 @@ int main(int ARGC, char* ARGV[])
 
 	}
 
+	/****************** object ***************/
+
+	{
+	print("object\n");
+
+	#define OLEN 10
+	ujobject* o;
+	ujstring* k;
+	ujvalue* v;
+	char sb[255];
+	int i;
+	print("object_allot()\n");
+	o = object_allot(OLEN);
+	assert( o->size == OLEN );
+
+	print("object_set()\n");
+	for(i = 0; i < 10; i++) {
+		sprintf(sb, "%c", (char)i+0x40);
+		k = string_from((uint8_t*)sb);
+		v = ujvalue_new();
+		v->type = uj_number;
+		v->numbertype = uj_uint32;
+		v->data_as.uint32 = (uint32_t)(i<<24 | i<<16 | i<<8 | i);
+		object_set(o, k, v);
+	}
+
+	print("object_get()\n");
+	for(i = 9; i >= 0; i--) {
+		sprintf(sb, "%c", (char)i+0x40);
+		k = string_from((uint8_t*)sb);
+		v = object_get(o, k);
+		string_release(&k);
+		assert( v->data_as.uint32 == (uint32_t)(i<<24 | i<<16 | i<<8 | i) );
+	}
+
+	print("object_release()\n");
+	object_release(&o);
+	}
+
 	/****************** parse *************/
 
 	ujvalue* v;
