@@ -71,7 +71,7 @@ ujobject* object_each(ujobject* o, void(*f)(ujstring** k, ujvalue** v))
 
 static void _object_chain_release(ujstring** k, ujvalue** v)
 {
-	str_release(k);
+	string_release(k);
 	ujvalue_release(v);
 }
 

@@ -484,43 +484,40 @@ int main(int ARGC, char* ARGV[])
 
 	/********************** str tests ************/
 
-	print("str\n");
+	print("ujson-string\n");
 
-	str* test_str1;
-	str* test_str2;
+	ujstring* test_str1;
+	ujstring* test_str2;
 	#define TEST_STRING_1 "this is a test string, ain't it grand?"
 	#define TEST_STRING_2 "this is a test string, but shorter."
 	bot = (uint8_t*)TEST_STRING_1;
 	zero(but, BUFFER_LENGTH);
-	test_str1 = str_allot( strlen((char*)bot) );
-	assert( test_str1->length == 0 );
-	assert( test_str1->data == test_str1->buffer );
-	assert( strlen((char*)test_str1->data) == 0 );
-
-	print("str_set()\n");
-	str_set(test_str1, bot);
-	assert( strlen((char*)test_str1->data) == strlen((char*)bot) );
+	test_str1 = string_allot( strlen((char*)bot) );
 	assert( test_str1->length == strlen((char*)bot) );
-	assert( buffers_match(test_str1->data, bot, strlen((char*)bot) ));
+	assert( strlen((char*)test_str1->data) == 0 );
+	// yes s->length should be alloted size and strlen zero, here. assuming strings
+	// will be assigned upon creation and not mutated later.
 
-	test_str2 = str_allot( strlen((char*)bot) );
-	str_set(test_str2, bot);
-	assert( str_eq(test_str1, test_str2) );
+	print("string_release()\n");
+	string_release(&test_str1);
+	assert( test_str1 == NULL );
 
-	print("str_eq()\n");
-	bot = (uint8_t*)TEST_STRING_2;
-	str_set(test_str2, bot);
-	assert( ! str_eq(test_str1, test_str2) );
+	print("string_from()\n");
+	test_str1 = string_from((uint8_t*)TEST_STRING_1);
+	assert( test_str1->length = strlen(TEST_STRING_1) );
+	assert( strcmp((char*)test_str1->data, TEST_STRING_1) == 0 );
+
+	print("string_eq()\n");
+	test_str2 = string_from( (char*)TEST_STRING_2 );
+	assert( ! string_eq(test_str1, test_str2) );
 	assert( test_str1->length > test_str2->length );
+	string_release(&test_str2);
+	test_str2 = string_from( (char*)TEST_STRING_1 );
+	assert( string_eq(test_str1, test_str2) );
 	
-	print("str_release()\n");
-	str_release(&test_str2);
-	assert( test_str2 == NULL );
-
-	print("str_from()\n");
-	test_str2 = str_from((uint8_t*)TEST_STRING_1);
-	assert( test_str2->length = strlen(TEST_STRING_1) );
-	assert( str_eq(test_str1, test_str2) );
+	string_release(&test_str1);
+	string_release(&test_str2);
+	
 
 	/****************** array ************/
 

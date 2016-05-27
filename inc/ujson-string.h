@@ -33,25 +33,24 @@
 
 #define FIXEDSTR_LEN (255)
 
-typedef struct {
-	uint8_t* data;
-	uint16_t length;
-	uint16_t max;
-	uint8_t buffer[];
-} str;
+typedef struct ujstring ujstring;
+typedef struct ujfixedstr ujfixedstr;
 
-typedef struct {
-	uint8_t* data;
+struct __attribute__ ((__packed__)) ujstring {
 	uint16_t length;
-	uint16_t max;
-	uint8_t buffer[FIXEDSTR_LEN+1];
-} fixedstr;
+	uint8_t data[];
+};
 
-str* str_allot(uint16_t len);
-void str_release(str** s);
-int str_eq(str* a, str* b);
-uint16_t str_findlen(const uint8_t* s);
-void str_set(str* s, uint8_t* src_buf);
-str* str_from(uint8_t* src_buf);
+// may change
+struct __attribute__ ((__packed__)) ujfixedstr {
+	uint16_t length;
+	uint8_t data[FIXEDSTR_LEN+1];
+};
+
+ujstring* string_allot(uint16_t len);
+int string_eq(ujstring* a, ujstring* b);
+uint16_t string_findlen(const uint8_t* s);
+ujstring* string_from(uint8_t* src_buf);
+void string_release(ujstring** s);
 
 #endif

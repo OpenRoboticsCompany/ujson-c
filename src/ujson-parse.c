@@ -151,7 +151,8 @@ ujvalue* parse(uint8_t** buf)
 			case uj_string_tag:
 				v->type = uj_string;
 				extract_uint16(buf, &sl);
-				v->data_as.string = str_allot(sl);
+				v->data_as.string = string_allot(sl);
+				v->data_as.string->length = sl;
 				(*buf) -= 2;
 				extract_string(buf, v->data_as.string->data);
 				break;

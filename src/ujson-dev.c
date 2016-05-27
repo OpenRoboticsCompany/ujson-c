@@ -83,7 +83,7 @@ int main(int argc, char* argv[])
 
 	v = ujvalue_new();
 	v->type = uj_string;
-	v->data_as.string = str_from((uint8_t*)"This is a test string");
+	v->data_as.string = string_from((uint8_t*)"This is a test string");
 	array_push(lp, v);
 
 	v = ujvalue_new();
@@ -91,13 +91,13 @@ int main(int argc, char* argv[])
 	v->data_as.array = array_allot(3);
 	ujvalue* v2;
 	v2 = ujvalue_new(); v2->type = uj_string;
-	v2->data_as.string = str_from((uint8_t*)"String One");
+	v2->data_as.string = string_from((uint8_t*)"String One");
 	array_push(v->data_as.array, v2); 
 	v2 = ujvalue_new(); v2->type = uj_string;
-	v2->data_as.string = str_from((uint8_t*)"String Two");
+	v2->data_as.string = string_from((uint8_t*)"String Two");
 	array_push(v->data_as.array, v2); 
 	v2 = ujvalue_new(); v2->type = uj_string;
-	v2->data_as.string = str_from((uint8_t*)"String Three");
+	v2->data_as.string = string_from((uint8_t*)"String Three");
 	array_push(v->data_as.array, v2); 
 	array_push(lp, v);
 

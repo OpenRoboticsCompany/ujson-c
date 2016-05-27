@@ -41,7 +41,7 @@ uint16_t hash_buffer(const uint8_t* x, const uint16_t len)
 	return h;
 }
 
-uint16_t hash(const str* s)
+uint16_t hash(const ujstring* s)
 {
 	return hash_buffer(s->data, s->length);
 }

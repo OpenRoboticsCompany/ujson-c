@@ -44,7 +44,7 @@ struct __attribute__ ((__packed__)) ujvalue {
 	union {
 		ujvalue* object; //TODO change
 		ujarray* array;
-		str* string;
+		ujstring* string;
 		uint8_t uint8;
 		int8_t int8;
 		uint16_t uint16;

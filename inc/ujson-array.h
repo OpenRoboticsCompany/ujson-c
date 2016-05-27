@@ -35,7 +35,7 @@
 typedef struct ujvalue ujvalue;
 typedef struct ujarray ujarray;
 
-struct ujarray {
+struct __attribute__ ((__packed__)) ujarray {
 	uint16_t start;
 	uint16_t end;
 	uint16_t size;
