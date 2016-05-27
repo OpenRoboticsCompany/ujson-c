@@ -48,10 +48,16 @@
 #include "ujson-parse.h"
 #include "ujson-hash.h"
 #include "ujson-object.h"
+#include <assert.h>
 
 int main(int argc, char* argv[])
 {
 	printf("\n\n*********************\nRunning ujson dev rig.\n");
+
+	printf("parse_objectlen()\n");
+	char* a = "\x00\x0e\x00\x03\x41\x41\x41\x63\x2a\x00\x03\x42\x42\x42\x63\x40";
+	printf("len is %d\n", parse_objectlen(&a));
+	assert( parse_objectlen(&a) == 2 );
 
 	printf("Listening for udp...\n");
 	int n;

@@ -86,8 +86,14 @@ static void ujdumpval(ujvalue* v, int i)
 			printf("]\n");
 			break;
 		case uj_object:
-			// TODO implement this after objects done
-			printf("{Object (not yet implemented)}\n");
+			printf("{\n");
+			for (n = 0; n < v->data_as.object->size; n++) {
+				indent(i+1);
+				printf("\"%s\":\n", ((ujstring*)v->data_as.object->data[n*2])->data);
+				ujdumpval((ujvalue*)v->data_as.object->data[n*2+1], i+1);
+			}
+			indent(i);
+			printf("}\n");
 			break;
 	}
 }
