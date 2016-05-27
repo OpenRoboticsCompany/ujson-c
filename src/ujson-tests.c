@@ -508,11 +508,11 @@ int main(int ARGC, char* ARGV[])
 	assert( strcmp((char*)test_str1->data, TEST_STRING_1) == 0 );
 
 	print("string_eq()\n");
-	test_str2 = string_from( (char*)TEST_STRING_2 );
+	test_str2 = string_from( (uint8_t*)TEST_STRING_2 );
 	assert( ! string_eq(test_str1, test_str2) );
 	assert( test_str1->length > test_str2->length );
 	string_release(&test_str2);
-	test_str2 = string_from( (char*)TEST_STRING_1 );
+	test_str2 = string_from( (uint8_t*)TEST_STRING_1 );
 	assert( string_eq(test_str1, test_str2) );
 	
 	string_release(&test_str1);
