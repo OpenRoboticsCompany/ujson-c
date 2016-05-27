@@ -32,7 +32,9 @@
 #include <stdint.h>
 #include "ujson-string.h"
 
-uint16_t hash_buffer(const uint8_t* x, const uint16_t len);
-uint16_t hash(const ujstring* s);
+typedef uint16_t ujhash;
+
+ujhash hash_buffer(const uint8_t* x, const uint16_t len);
+ujhash hash_string(const ujstring* s);
 
 #endif

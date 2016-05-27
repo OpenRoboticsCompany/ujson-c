@@ -31,9 +31,9 @@
 #include "ujson-hash.h"
 #include "ujson-string.h"
 
-uint16_t hash_buffer(const uint8_t* x, const uint16_t len)
+ujhash hash_buffer(const uint8_t* x, const uint16_t len)
 {
-	uint16_t h = 0;
+	ujhash h = 0;
 	uint16_t i;
 	for (i = 0; i < len; i++) {
 		h += ((x[i] << 9) + (x[i] << 4) + x[i]) ^ (h << 3);
@@ -41,7 +41,7 @@ uint16_t hash_buffer(const uint8_t* x, const uint16_t len)
 	return h;
 }
 
-uint16_t hash(const ujstring* s)
+ujhash hash_string(const ujstring* s)
 {
 	return hash_buffer(s->data, s->length);
 }

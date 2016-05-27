@@ -32,8 +32,8 @@
 #include "ujson-value.h"
 #include "ujson-string.h"
 #include "ujson-array.h"
-#include "ujson-object.h"
 #include "ujson-hash.h"
+#include "ujson-object.h"
 
 ujobject* object_allot(uint16_t len)
 {
@@ -45,28 +45,63 @@ ujobject* object_allot(uint16_t len)
 	return o;
 }
 
-uint16_t object_length(ujobject* o)
-{
-}
-
 ujobject* object_set(ujobject* o, ujstring* k, ujvalue* v)
 {
-	// TODO simplify the string handling first, then fixup the hash, then implement here
 	uint16_t i;
-	uint16_t h;
-	//h = hash_buffer(k->data
+	ujhash h;
+	h = hash_string(k);
+	for (i = 0; i < o->size; i++) {
+		if (o->data[((h+i) % o->size) * 2] && !string_eq(k, (ujstring*)o->data[((h+i) % o->size) * 2])) continue;
+		printf("\n");
+		o->data[((h+i) % o->size) * 2] = k;
+		o->data[((h+i) % o->size) * 2 + 1] = v;
+		return o;
+	}
+	return NULL;
 }
 
-ujvalue* object_get(ujobject* o, uint8_t* k)
+ujvalue* object_get(ujobject* o, ujstring* k)
 {
+	uint16_t i;
+	ujhash h;
+	h = hash_string(k);
+	for (i = 0; i < o->size; i++) {
+		if (o->data[((h+i) % o->size) * 2] && !string_eq(k, (ujstring*)o->data[((h+i) % o->size) * 2])) continue;
+		return o->data[((h+i) % o->size) * 2 + 1];
+	}
+	return NULL;
 }
 
-ujarray* object_keys(ujobject* o)
+ujvalue* object_keys(ujobject* o)
 {
+	uint16_t i;
+	ujvalue* v;
+	ujvalue* k;
+	ujstring* s;
+	v = ujvalue_new();
+	v->type = uj_array;
+	v->data_as.array = array_allot(o->size);
+	for (i = 0; i < o->size; i++) {
+		if (o->data[i*2]) {
+			k = ujvalue_new();
+			k->type = uj_string;
+			// TODO Don't like duplictaing data here, but need to or else breaks chain-release
+			// with duplicated pointers to same object. Make be less dumb.
+			s = string_from( ((ujstring*)o->data[i*2])->data );
+			k->data_as.string = s;
+			array_push(v->data_as.array, k);
+		}
+	}
+	return v;
 }
 
 ujobject* object_each(ujobject* o, void(*f)(ujstring** k, ujvalue** v))
 {
+	uint16_t i;
+	for (i = 0; i < o->size; i++) {
+		f((ujstring**)&o->data[i*2], (ujvalue**)&o->data[i*2+1]);
+	}
+	return o;
 }
 
 static void _object_chain_release(ujstring** k, ujvalue** v)

@@ -44,10 +44,9 @@ struct ujobject {
 };
 
 ujobject* object_allot(uint16_t len);
-uint16_t object_length(ujobject* o);
 ujobject* object_set(ujobject* o, ujstring* k, ujvalue* v);
-ujvalue* object_get(ujobject* o, uint8_t* k);
-ujarray* object_keys(ujobject* o);
+ujvalue* object_get(ujobject* o, ujstring* k);
+ujvalue* object_keys(ujobject* o);
 ujobject* object_each(ujobject* o, void(*f)(ujstring** k, ujvalue** v));
 void object_release(ujobject** o);
 
