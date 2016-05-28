@@ -29,7 +29,7 @@
 #ifndef _UJ_DUMP_H
 #define _UJ_DUMP_H
 
-#include <stdint.h>
+#include "ujson-value.h"
 
 void ujdump(ujvalue* v);
 
