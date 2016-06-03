@@ -30,75 +30,11 @@
 #include <stdio.h>
 #include <stdint.h>
 #include "ujson-value.h"
-
-static void indent(int i)
-{
-	while (i--) printf("\t");
-}
-
-static void ujdumpval(ujvalue* v, int i)
-{
-	int n;
-	indent(i);
-	switch(v->type) {
-		case uj_true:
-			printf("true\n");
-			break;
-		case uj_false:
-			printf("false\n");
-			break;
-		case uj_null:
-			printf("null\n");
-			break;
-		case uj_number:
-			switch(v->numbertype) {
-				case uj_uint8:
-					printf("uint8/%u\n",v->data_as.uint8); break;
-				case uj_int8:
-					printf("int8/%d\n",v->data_as.int8); break;
-				case uj_uint16:
-					printf("uint16/%u\n",v->data_as.uint16); break;
-				case uj_int16:
-					printf("int16/%d\n",v->data_as.int16); break;
-				case uj_uint32:
-					printf("uint32/%u\n",v->data_as.uint32); break;
-				case uj_int32:
-					printf("int32/%d\n",v->data_as.int32); break;
-				case uj_uint64:
-					printf("uint64/%llu\n",v->data_as.uint64); break;
-				case uj_int64:
-					printf("int64/%lld\n",v->data_as.int64); break;
-				case uj_float:
-					printf("float/%f\n",v->data_as.f); break;
-				case uj_double:
-					printf("double/%f\n",v->data_as.d); break;
-			}
-			break;
-		case uj_string:
-			printf("\"%s\"\n",(char*)v->data_as.string->data);
-			break;
-		case uj_array:
-			printf("[\n");
-			for (n = 0; n < array_length(v->data_as.array); n++) {
-				ujdumpval(v->data_as.array->values[n], i + 1);
-			}
-			indent(i);
-			printf("]\n");
-			break;
-		case uj_object:
-			printf("{\n");
-			for (n = 0; n < v->data_as.object->size; n++) {
-				indent(i+1);
-				printf("\"%s\":\n", ((ujstring*)v->data_as.object->data[n*2])->data);
-				ujdumpval((ujvalue*)v->data_as.object->data[n*2+1], i+1);
-			}
-			indent(i);
-			printf("}\n");
-			break;
-	}
-}
+#include "ujson-tojson.h"
 
 void ujdump(ujvalue* v)
 {
-	ujdumpval(v, 0);
+	char buf[16384] = {0};
+	tojson_with_types(buf, v);
+	printf("%s\n", buf);
 }

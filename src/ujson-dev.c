@@ -44,11 +44,11 @@
 #include "schematags.h"
 #include "ujson-value.h"
 #include "ujson-array.h"
-#include "ujson-dump.h"
 #include "ujson-parse.h"
 #include "ujson-hash.h"
 #include "ujson-object.h"
 #include "ujson-tojson.h"
+#include "ujson-dump.h"
 #include <assert.h>
 
 int main(int argc, char* argv[])
@@ -70,9 +70,9 @@ int main(int argc, char* argv[])
 		ujvalue* parsedv;
 		uint8_t* buf = (uint8_t*)buffer;
 		parsedv = parse(&buf);
-		//ujdump(parsedv);
 		tojson_with_types(buffer, parsedv);
 		printf("%s\n", buffer);
+		ujdump(parsedv);
 	}
 	return 0;
 }
