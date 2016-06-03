@@ -55,18 +55,24 @@ int main(int argc, char* argv[])
 {
 	printf("\n\n*********************\nRunning ujson dev rig.\n");
 
+	#define BUFLEN 2048
+	char buffer[BUFLEN] = {0};
+
 	while(1) {
 		printf("Listening for udp...\n");
-		int n;
+		int n, i;
 		unsigned char buffer[65536];
 		n = rec(buffer, 65536);
 		printf("recevied %u bytes\n",n);
+		i = 0;
+		while (i < n) printf("\\x%02X", buffer[i++]);
+		printf("\n");
 		ujvalue* parsedv;
 		uint8_t* buf = (uint8_t*)buffer;
 		parsedv = parse(&buf);
 		//ujdump(parsedv);
-		tojson(parsedv);
-		tojson_with_types(parsedv);
+		tojson_with_types(buffer, parsedv);
+		printf("%s\n", buffer);
 	}
 	return 0;
 }

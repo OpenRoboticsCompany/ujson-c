@@ -36,7 +36,7 @@ enum ujtojsonopts {
 	uj_showtypes = 1
 };
 
-void tojson(ujvalue* v);
-void tojson_with_types(ujvalue* v);
+void tojson(char* buf, ujvalue* v);
+void tojson_with_types(char* buf, ujvalue* v);
 
 #endif

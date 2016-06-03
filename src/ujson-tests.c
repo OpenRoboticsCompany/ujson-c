@@ -51,6 +51,7 @@
 #include "ujson-parse.h"
 #include "ujson-value.h"
 #include "ujson-array.h"
+#include "ujson-tojson.h"
 
 // Change output routine here for serial output on embedded, etc.
 void print(char* s)
@@ -872,6 +873,23 @@ int main(int ARGC, char* ARGV[])
 	assert(v->data_as.array->values[1]->data_as.array->values[1]->numbertype == uj_int8);
 	assert(v->data_as.array->values[1]->data_as.array->values[1]->data_as.int8 == 4);
 	ujvalue_release(&v);
+
+	/************************************* tojson *****************/
+
+	{
+	print("tojson functions\n");
+	bot = (uint8_t*)"\x61\x00\x84\x73\x00\x05\x68\x65\x6C\x6C\x6F\x74\x63\x7B\x61\x00\x68\x77\x16\x2E\x6E\x73\x00\x05\x77\x6F\x72\x6C\x64\x61\x00\x06\x63\x05\x63\x06\x63\x07\x6F\x00\x50\x00\x07\x6B\x65\x79\x20\x6F\x6E\x65\x63\x2A\x00\x0A\x6E\x65\x73\x74\x65\x64\x20\x61\x72\x72\x61\x00\x06\x63\x01\x63\x02\x63\x03\x00\x0A\x73\x74\x72\x69\x6E\x67\x20\x6B\x65\x79\x73\x00\x0B\x73\x70\x65\x63\x74\x61\x63\x75\x6C\x61\x72\x00\x0A\x6E\x65\x73\x74\x65\x64\x20\x6F\x62\x6A\x6F\x00\x07\x00\x03\x79\x61\x79\x63\x45\x44\x45\x59\x87\xBF\x7C\xB8\xEC\x63\x64\x3F\x9D\xF3\xB6";
+	#define TOJSON_OUTPUT "[\"hello\",true,123,[5678,null,\"world\",[5,6,7],{\"nested arr\":[1,2,3],\"string key\":\"spectacular\",\"nested obj\":{\"yay\":69},\"key one\":42}],123456789123456705438416896.00000000000000000,1.233999968]"
+	#define TOJSON_WITH_TYPES_OUTPUT "[\"hello\",true,123/int8,[5678/int16,null,\"world\",[5/int8,6/int8,7/int8],{\"nested arr\":[1/int8,2/int8,3/int8],\"string key\":\"spectacular\",\"nested obj\":{\"yay\":69/int8},\"key one\":42/int8}],123456789123456705438416896.00000000000000000/double,1.233999968/float]"
+	char jsonbuf[1024] = {0};
+	v = parse(&bot);
+	print("tojson()\n");
+	tojson(jsonbuf, v);
+	assert( strcmp(jsonbuf, TOJSON_OUTPUT) == 0 );
+	print("tojson_with_types()\n");
+	tojson_with_types(jsonbuf, v);
+	assert( strcmp(jsonbuf, TOJSON_WITH_TYPES_OUTPUT) == 0 );
+	}
 
 	// TODO: more tests!
 
