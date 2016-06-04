@@ -23,15 +23,17 @@
   * and https://github.com/aaronkondziela/ujson-c/
   *
   * movebytes.c
-  * Copies from one buffer to another, bytewise. This avoids machine alignment
-  * issues that can crop up in some cases with memcpy, for instance. You can
-  * probably optimize how this works for your specific embodiment of ujson-c
+  * Copies from one buffer to another.
+  * This is a common target for hardware-specific optimization. Tweak to suit your
+  * specific embodiment of ujson-c
   *
   */
 
+#include <string.h>
 #include "movebytes.h"
 
-void movebytes(uint8_t* to, uint8_t* from, uint16_t n)
+inline void movebytes(uint8_t* to, uint8_t* from, uint16_t n)
 {
-	while (n--) to[n] = from[n];
+	//while (n--) to[n] = from[n];
+	memcpy(to, from, (size_t)n);
 }
