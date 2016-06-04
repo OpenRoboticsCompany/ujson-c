@@ -32,7 +32,7 @@
   *
   */
 
-#include "endian.h"
+#include "ujson-endian.h"
 #include "movebytes.h"
 #include "ujsizes.h"
 #include "schematags.h"

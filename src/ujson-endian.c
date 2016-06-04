@@ -22,13 +22,13 @@
   * Part of ujson-c - Implements microjson in C - see ujson.org
   * and https://github.com/aaronkondziela/ujson-c/
   *
-  * endian.c
+  * ujson-endian.c
   * Conversion and helper functions for juggling endianness.
   * Assumes gcc for some things. Note, floats on ARM are tricksy. RTFM.
   *
   */
 
-#include "endian.h"
+#include "ujson-endian.h"
 
 #ifdef __GNUC__
 	#define _NOWARN_UNUSED __attribute__ ((unused))

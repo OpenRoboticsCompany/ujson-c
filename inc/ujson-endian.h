@@ -22,7 +22,7 @@
   * Part of ujson-c - Implements microjson in C - see ujson.org
   * and https://github.com/aaronkondziela/ujson-c/
   *
-  * endian.h
+  * ujson-endian.h
   * Conversion macros and helper functions for juggling endianness
   * Assumes gcc for some things. Note, if you have to deal with actual
   * floats on ARM architectures, read the ARM docs and tread carefully.

@@ -36,7 +36,7 @@
 
 #include "ujson-encode.h"
 #include "hexdump.h"
-#include "endian.h"
+#include "ujson-endian.h"
 #include "udp.h"
 #include "ujson-hash.h"
 #include "ujson-string.h"

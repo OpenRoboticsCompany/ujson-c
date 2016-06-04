@@ -29,7 +29,7 @@
   *
   */
 
-#include "endian.h"
+#include "ujson-endian.h"
 #include "movebytes.h"
 #include "ujson-extract.h"
 

@@ -27,7 +27,7 @@
   *
   */
 
-#include "endian.h"
+#include "ujson-endian.h"
 #include "movebytes.h"
 #include "ujson-data.h"
 
