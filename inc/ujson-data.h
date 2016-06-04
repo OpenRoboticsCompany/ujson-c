@@ -30,11 +30,10 @@
 #define _UJ_DATA_H
 
 #include <stdint.h>
+#include "ujson-value.h"
 
-void data_bool_true(uint8_t** nextbuf, uint8_t val);
-void data_bool_false(uint8_t** nextbuf, uint8_t val);
 void data_bool(uint8_t** nextbuf, uint8_t val);
-void data_null(uint8_t** nextbuf, uint8_t val);
+void data_null(uint8_t** nextbuf);
 void data_uint8(uint8_t** nextbuf, uint8_t val);
 void data_int8(uint8_t** nextbuf, int8_t val);
 void data_uint16(uint8_t** nextbuf, uint16_t val);
@@ -46,6 +45,6 @@ void data_int64(uint8_t** nextbuf, int64_t val);
 void data_string(uint8_t** nextbuf, char* str);
 void data_float(uint8_t** nextbuf, float val);
 void data_double(uint8_t** nextbuf, double val);
-void data(uint8_t* destbuf, uint16_t destsize, uint8_t** srcbuf, uint16_t srclen);
+uint16_t data(uint8_t* buf, ujvalue* v);
 
 #endif

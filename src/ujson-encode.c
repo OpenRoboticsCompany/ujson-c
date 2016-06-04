@@ -105,6 +105,7 @@ void encode_int64(uint8_t** nextbuf, int64_t val)
 	(*nextbuf) += 9;
 }
 
+// TODO clean up
 void encode_string(uint8_t** nextbuf, char* str)
 {
 	uint16_t len = 0, len2 = 0;

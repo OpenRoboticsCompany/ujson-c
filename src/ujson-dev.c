@@ -83,6 +83,9 @@ int main(int argc, char* argv[])
 		buf = (uint8_t*)buffer;
 		decodedv = decode(&buf);
 		ujdump(decodedv);
+		buf = (uint8_t*)buffer;
+		n = data(buf, decodedv);
+		hexdump(buffer, n);
 		printf("---\n");
 	}
 

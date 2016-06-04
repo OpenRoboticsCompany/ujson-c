@@ -29,21 +29,8 @@
 
 #include "ujson-endian.h"
 #include "ujson-movebytes.h"
+#include "ujson-value.h"
 #include "ujson-data.h"
-
-// you'll probably never use these bool_foo; included for structural symmetry
-// perhaps to be removed later.
-void data_bool_true(uint8_t** nextbuf, uint8_t val)
-{
-	**nextbuf = (uint8_t)'t';
-	(*nextbuf) += 1;
-}
-
-void data_bool_false(uint8_t** nextbuf, uint8_t val)
-{
-	**nextbuf = (uint8_t)'f';
-	(*nextbuf) += 1;
-}
 
 void data_bool(uint8_t** nextbuf, uint8_t val)
 {
@@ -51,7 +38,7 @@ void data_bool(uint8_t** nextbuf, uint8_t val)
 	(*nextbuf) += 1;
 }
 
-void data_null(uint8_t** nextbuf, uint8_t val)
+void data_null(uint8_t** nextbuf)
 {
 	**nextbuf = (uint8_t)'n';
 	(*nextbuf) += 1;
@@ -111,6 +98,7 @@ void data_int64(uint8_t** nextbuf, int64_t val)
 	(*nextbuf) += 8;
 }
 
+// TODO clean up
 void data_string(uint8_t** nextbuf, char* str)
 {
 	uint16_t len = 0, len2 = 0;
@@ -138,37 +126,97 @@ void data_double(uint8_t** nextbuf, double val)
 	(*nextbuf) += 8;
 }
 
-/*
-void data(uint8_t* destbuf, uint16_t destsize, uint8_t** srcbuf, uint16_t srclen)
+
+static void _data_size(uint8_t* buf, uint16_t val)
 {
-	//TODO
-
-	uint8_t derp;
-
-	switch(derp) {
-		case UJ_BOOL_TRUE_TAG:
-		case UJ_BOOL_FALSE_TAG:
-		case UJ_NULL_TAG:
-		case UJ_UINT8_TAG:
-		case UJ_INT8_TAG:
-		case UJ_UINT16_TAG:
-		case UJ_INT16_TAG:
-		case UJ_UINT32_TAG:
-		case UJ_INT32_TAG:
-		case UJ_UINT64_TAG:
-		case UJ_INT64_TAG:
-		case UJ_STRING_TAG:
-		case UJ_FLOAT_TAG:
-		case UJ_DOUBLE_TAG:
-		case UJ_ARRAY_TAG:
-		case UJ_OBJECT_TAG:
-		default:
-	}
-
+	val = htoj16(val);
+	movebytes(buf, (uint8_t*)&val, 2);
 }
-*/
 
+static void _data_string(uint8_t** buf, ujstring* str)
+{
+	_data_size(*buf, str->length);
+	(*buf) += 2;
+	movebytes(*buf, str->data, str->length);
+	(*buf) += str->length;
+}
 
+static void _data(uint8_t** buf, ujvalue* v, int i)
+{
+	uint16_t n;
+	uint8_t* sizefield;
+	switch(v->type) {
+		case uj_true:
+			data_bool(buf, 1);
+			break;
+		case uj_false:
+			data_bool(buf, 0);
+			break;
+		case uj_null:
+			data_null(buf);
+			break;
+		case uj_number:
+			switch(v->numbertype) {
+				case uj_uint8:
+					data_uint8(buf, v->data_as.uint8);
+					break;
+				case uj_int8:
+					data_int8(buf, v->data_as.int8);
+					break;
+				case uj_uint16:
+					data_uint16(buf, v->data_as.uint16);
+					break;
+				case uj_int16:
+					data_int16(buf, v->data_as.int16);
+					break;
+				case uj_uint32:
+					data_uint32(buf, v->data_as.uint32);
+					break;
+				case uj_int32:
+					data_int32(buf, v->data_as.int32);
+					break;
+				case uj_uint64:
+					data_uint64(buf, v->data_as.uint64);
+					break;
+				case uj_int64:
+					data_int64(buf, v->data_as.int64);
+					break;
+				case uj_float:
+					data_float(buf, v->data_as.f);
+					break;
+				case uj_double:
+					data_double(buf, v->data_as.d);
+					break;
+			}
+			break;
+		case uj_string:
+			data_string(buf, (char*)v->data_as.string->data);
+			break;
+		case uj_array:
+			sizefield = *buf;
+			(*buf) += 2;
+			for (n = 0; n < array_length(v->data_as.array); n++) _data(buf, v->data_as.array->values[n], i+1);
+			_data_size(sizefield, (uint16_t)((*buf) - sizefield - 2));
+			break;
+		case uj_object:
+			sizefield = *buf;
+			(*buf) += 2;
+			for (n = 0; n < v->data_as.object->size; n++) {
+				_data_string(buf, (ujstring*)v->data_as.object->data[n*2]);
+				_data(buf, v->data_as.object->data[n*2+1], i+1);
+			}
+			_data_size(sizefield, (uint16_t)((*buf) - sizefield - 2));
+			break;
+	}
+}
+
+uint16_t data(uint8_t* buf, ujvalue* v)
+{
+	uint8_t* bufstart;
+	bufstart = buf;
+	_data(&buf, v, 0);
+	return (uint16_t)(buf - bufstart);
+}
 
 
 
