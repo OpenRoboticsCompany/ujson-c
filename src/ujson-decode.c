@@ -22,9 +22,11 @@
   * Part of ujson-c - Implements microjson in C - see ujson.org
   * and https://github.com/aaronkondziela/ujson-c/
   *
-  * ujson-parse.c
-  * Parsing functions - de-serialize elements from ujson format
-  * This is appropriate for parsing dynamic objects of unknown size or form,
+  * ujson-decode.c
+  *
+  * Decode functions - de-serialize elements from ujson format with inline schema
+  *
+  * This is appropriate for decoding dynamic objects of unknown size or form,
   * and uses malloc. For a very small embedded system, it's better to use a
   * flat decoder and a fixed format.
   *
@@ -39,7 +41,7 @@
 #include "ujson-array.h"
 #include "ujson-object.h"
 #include "ujson-value.h"
-#include "ujson-parse.h"
+#include "ujson-decode.h"
 
 static void _consume_tag(uint8_t** b)
 {
@@ -79,7 +81,7 @@ static void _consume_tag(uint8_t** b)
 	}
 }
 
-uint16_t parse_arraylen(uint8_t** buf)
+uint16_t decode_arraylen(uint8_t** buf)
 {
 	// buf should have the 'a' schematag trimmed
 	uint8_t* b = *buf;
@@ -93,7 +95,7 @@ uint16_t parse_arraylen(uint8_t** buf)
 }
 
 
-uint16_t parse_objectlen(uint8_t** buf)
+uint16_t decode_objectlen(uint8_t** buf)
 {
 	// buf should have the 'o' schematag trimmed
 	uint8_t* b = *buf;
@@ -114,7 +116,7 @@ uint16_t parse_objectlen(uint8_t** buf)
 }
 
 
-ujvalue* parse(uint8_t** buf)
+ujvalue* decode(uint8_t** buf)
 {
 	uint8_t t;
 	uint16_t l, m;
@@ -192,14 +194,14 @@ ujvalue* parse(uint8_t** buf)
 			break;
 		case uj_array_tag:
 			v->type = uj_array;
-			l = parse_arraylen(buf);
+			l = decode_arraylen(buf);
 			(*buf) += 2;
 			v->data_as.array = array_allot(l);
-			while (l--) array_push(v->data_as.array, parse(buf));
+			while (l--) array_push(v->data_as.array, decode(buf));
 			break;
 		case uj_object_tag:
 			v->type = uj_object;
-			l = parse_objectlen(buf);
+			l = decode_objectlen(buf);
 			(*buf) += 2;
 			v->data_as.object = object_allot(l);
 			while (l--) {
@@ -207,7 +209,7 @@ ujvalue* parse(uint8_t** buf)
 				(*buf) -= 2;
 				k = string_allot(m);
 				extract_string(buf, k->data);
-				object_set(v->data_as.object, k, parse(buf));
+				object_set(v->data_as.object, k, decode(buf));
 			}
 			break;
 		default:

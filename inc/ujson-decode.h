@@ -22,19 +22,20 @@
   * Part of ujson-c - Implements microjson in C - see ujson.org
   * and https://github.com/aaronkondziela/ujson-c/
   *
-  * ujson-parse.h
+  * ujson-decode.h
   *
   */
 
-#ifndef _UJ_PARSE_H
-#define _UJ_PARSE_H
+#ifndef _UJ_DECODE_H
+#define _UJ_DECODE_H
 
 #include <stdint.h>
 #include "ujson-types.h"
 #include "ujson-value.h"
 
-uint16_t parse_arraylen(uint8_t** buf);
-ujvalue* parse(uint8_t** buf);
+uint16_t decode_arraylen(uint8_t** buf);
+uint16_t decode_objectlen(uint8_t** buf);
+ujvalue* decode(uint8_t** buf);
 
 #endif
 

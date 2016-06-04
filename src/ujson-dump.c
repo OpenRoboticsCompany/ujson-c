@@ -23,7 +23,7 @@
   * and https://github.com/aaronkondziela/ujson-c/
   *
   * ujson-dump.c
-  * prints out a parsed ujson object (ujvalue tree)
+  * Transforms ujson object to json, and prints to stdout. For debuggery.
   *
   */
 

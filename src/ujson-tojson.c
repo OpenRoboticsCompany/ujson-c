@@ -23,7 +23,8 @@
   * and https://github.com/aaronkondziela/ujson-c/
   *
   * ujson-tojson.c
-  * prints out a parsed ujson object (ujvalue tree)
+  * Tranforms a ujson object (ujvalue tree) to json text
+  * Requires a buffer of sufficient size to hold the json
   *
   */
 

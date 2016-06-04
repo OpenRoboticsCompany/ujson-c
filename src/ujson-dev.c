@@ -44,7 +44,7 @@
 #include "schematags.h"
 #include "ujson-value.h"
 #include "ujson-array.h"
-#include "ujson-parse.h"
+#include "ujson-decode.h"
 #include "ujson-hash.h"
 #include "ujson-object.h"
 #include "ujson-tojson.h"
@@ -67,12 +67,12 @@ int main(int argc, char* argv[])
 		i = 0;
 		while (i < n) printf("\\x%02X", buffer[i++]);
 		printf("\n");
-		ujvalue* parsedv;
+		ujvalue* decodedv;
 		uint8_t* buf = (uint8_t*)buffer;
-		parsedv = parse(&buf);
-		tojson_with_types(buffer, parsedv);
+		decodedv = decode(&buf);
+		tojson_with_types(buffer, decodedv);
 		printf("%s\n", buffer);
-		ujdump(parsedv);
+		ujdump(decodedv);
 	}
 	return 0;
 }
