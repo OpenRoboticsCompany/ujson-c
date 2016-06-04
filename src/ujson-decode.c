@@ -115,8 +115,7 @@ uint16_t decode_objectlen(uint8_t** buf)
 	return n >> 1;
 }
 
-// TODO wrap decode so it takes *buf
-ujvalue* decode(uint8_t** buf)
+static ujvalue* _decode(uint8_t** buf)
 {
 	uint8_t t;
 	uint16_t l, m;
@@ -197,7 +196,7 @@ ujvalue* decode(uint8_t** buf)
 			l = decode_arraylen(buf);
 			(*buf) += 2;
 			v->data_as.array = array_allot(l);
-			while (l--) array_push(v->data_as.array, decode(buf));
+			while (l--) array_push(v->data_as.array, _decode(buf));
 			break;
 		case uj_object_tag:
 			v->type = uj_object;
@@ -209,7 +208,7 @@ ujvalue* decode(uint8_t** buf)
 				(*buf) -= 2;
 				k = string_allot(m);
 				extract_string(buf, k->data);
-				object_set(v->data_as.object, k, decode(buf));
+				object_set(v->data_as.object, k, _decode(buf));
 			}
 			break;
 		default:
@@ -219,6 +218,12 @@ ujvalue* decode(uint8_t** buf)
 }
 
 
+ujvalue* decode(uint8_t* buf)
+{
+	uint8_t* bufp;
+	bufp = buf;
+	return _decode(&bufp);
+}
 
 
 

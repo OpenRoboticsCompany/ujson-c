@@ -708,7 +708,7 @@ int main(int ARGC, char* ARGV[])
 
 	print("decode(true)\n");
 	bot = (uint8_t*)"t";
-	v = decode(&bot);
+	v = decode(bot);
 	assert( v->type == uj_true );
 
 	print("ujvalue_release()\n");
@@ -717,20 +717,20 @@ int main(int ARGC, char* ARGV[])
 
 	print("decode(false)\n");
 	bot = (uint8_t*)"f";
-	v = decode(&bot);
+	v = decode(bot);
 	assert( v->type == uj_false );
 	ujvalue_release(&v);
 
 	print("decode(null)\n");
 	bot = (uint8_t*)"n";
-	v = decode(&bot);
+	v = decode(bot);
 	assert( v->type == uj_null );
 	ujvalue_release(&v);
 
 	print("decode(uint8)\n");
 	bot = (uint8_t*)"C\x7f\xAA";
 	u8a = 0x7f;
-	v = decode(&bot);
+	v = decode(bot);
 	assert( v->type == uj_number );
 	assert( v->numbertype == uj_uint8 );
 	assert( v->data_as.uint8 == u8a );
@@ -739,7 +739,7 @@ int main(int ARGC, char* ARGV[])
 	print("decode(int8)\n");
 	bot = (uint8_t*)"c\x81\xAA";
 	i8a = 0x81;
-	v = decode(&bot);
+	v = decode(bot);
 	assert( v->type == uj_number );
 	assert( v->numbertype == uj_int8 );
 	assert( v->data_as.int8 == i8a );
@@ -748,7 +748,7 @@ int main(int ARGC, char* ARGV[])
 	print("decode(uint16)\n");
 	bot = (uint8_t*)"W\x7f\xff\xAA";
 	u16a = 0x7fff;
-	v = decode(&bot);
+	v = decode(bot);
 	assert( v->type == uj_number );
 	assert( v->numbertype == uj_uint16 );
 	assert( v->data_as.uint16 == u16a );
@@ -757,7 +757,7 @@ int main(int ARGC, char* ARGV[])
 	print("decode(int16)\n");
 	bot = (uint8_t*)"w\x80\x02\xAA";
 	i16a = 0x8002;
-	v = decode(&bot);
+	v = decode(bot);
 	assert( v->type == uj_number );
 	assert( v->numbertype == uj_int16 );
 	assert( v->data_as.int16 == i16a );
@@ -766,7 +766,7 @@ int main(int ARGC, char* ARGV[])
 	print("decode(uint32)\n");
 	bot = (uint8_t*)"I\x7f\xff\xff\xff\xAA";
 	u32a = 0x7fffffff;
-	v = decode(&bot);
+	v = decode(bot);
 	assert( v->type == uj_number );
 	assert( v->numbertype == uj_uint32 );
 	assert( v->data_as.uint32 == u32a );
@@ -775,7 +775,7 @@ int main(int ARGC, char* ARGV[])
 	print("decode(int32)\n");
 	bot = (uint8_t*)"i\x80\x00\x00\x01\xAA";
 	i32a = 0x80000001;
-	v = decode(&bot);
+	v = decode(bot);
 	assert( v->type == uj_number );
 	assert( v->numbertype == uj_int32 );
 	assert( v->data_as.int32 == i32a );
@@ -784,7 +784,7 @@ int main(int ARGC, char* ARGV[])
 	print("decode(uint64)\n");
 	bot = (uint8_t*)"Q\x7f\xff\xff\xff\xff\xff\xff\xff\xAA";
 	u64a = 0x7fffffffffffffff;
-	v = decode(&bot);
+	v = decode(bot);
 	assert( v->type == uj_number );
 	assert( v->numbertype == uj_uint64 );
 	assert( v->data_as.uint64 == u64a );
@@ -793,7 +793,7 @@ int main(int ARGC, char* ARGV[])
 	print("decode(int64)\n");
 	bot = (uint8_t*)"q\x80\x00\x00\x00\x00\x00\x00\x03\xAA";
 	i64a = 0x8000000000000003;
-	v = decode(&bot);
+	v = decode(bot);
 	assert( v->type == uj_number );
 	assert( v->numbertype == uj_int64 );
 	assert( v->data_as.int64 == i64a );
@@ -804,7 +804,7 @@ int main(int ARGC, char* ARGV[])
 	#define TEST_STRING "if you have two strings do you call it twine?"
 	#define TEST_STRING_LEN 45
 	bot = (uint8_t*)"s\x00\x2D" TEST_STRING;
-	v = decode(&bot);
+	v = decode(bot);
 	assert( v->type == uj_string );
 	assert( v->data_as.string );
 	assert( v->data_as.string->data );
@@ -818,7 +818,7 @@ int main(int ARGC, char* ARGV[])
 	print("decode(float)\n");
 	bot = (uint8_t*)"d\x46\x40\xe6\xb7";
 	fa = (float)12345.6789;
-	v = decode(&bot);
+	v = decode(bot);
 	assert( v->type == uj_number );
 	assert( v->numbertype == uj_float );
 	assert( v->data_as.f == fa );
@@ -827,7 +827,7 @@ int main(int ARGC, char* ARGV[])
 	print("decode(double)\n");
 	bot = (uint8_t*)"D\x40\xc8\x1c\xd6\xe6\x31\xf8\xa1";
 	da = (double)12345.6789;
-	v = decode(&bot);
+	v = decode(bot);
 	assert( v->type == uj_number );
 	assert( v->numbertype == uj_double );
 	assert( v->data_as.d == da );
@@ -836,7 +836,7 @@ int main(int ARGC, char* ARGV[])
 	print("decode(array)\n");
 	bot = (uint8_t*)"a\x00\x0c\x43\xaa\x74\x57\xbb\xbb\x66\x49\xcc\xcc\xcc\xcc";
 	// [16#AA,true,16#BBBB,false,16#CCCCCCCC]
-	v = decode(&bot);
+	v = decode(bot);
 	assert(v->type == uj_array);
 	assert(v->data_as.array->size == 5);
 	assert(v->data_as.array->values[0]->type == uj_number);
@@ -855,7 +855,7 @@ int main(int ARGC, char* ARGV[])
 	print("decode(array of arrays)\n");
 	bot = (uint8_t*)"a\x00\x0e\x61\x00\x04\x63\x01\x63\x02\x61\x00\x04\x63\x03\x63\x04";
 	// [[1,2],[3,4]]
-	v = decode(&bot);
+	v = decode(bot);
 	assert(v->type == uj_array);
 	assert(v->data_as.array->size == 2);
 	assert(v->data_as.array->values[0]->type == uj_array);
@@ -882,7 +882,7 @@ int main(int ARGC, char* ARGV[])
 	#define TOJSON_OUTPUT "[\"hello\",true,123,[5678,null,\"world\",[5,6,7],{\"nested arr\":[1,2,3],\"string key\":\"spectacular\",\"nested obj\":{\"yay\":69},\"key one\":42}],123456789123456705438416896.00000000000000000,1.233999968]"
 	#define TOJSON_WITH_TYPES_OUTPUT "[\"hello\",true,123/int8,[5678/int16,null,\"world\",[5/int8,6/int8,7/int8],{\"nested arr\":[1/int8,2/int8,3/int8],\"string key\":\"spectacular\",\"nested obj\":{\"yay\":69/int8},\"key one\":42/int8}],123456789123456705438416896.00000000000000000/double,1.233999968/float]"
 	char jsonbuf[1024] = {0};
-	v = decode(&bot);
+	v = decode(bot);
 	print("tojson()\n");
 	tojson(jsonbuf, v);
 	assert( strcmp(jsonbuf, TOJSON_OUTPUT) == 0 );
@@ -903,7 +903,7 @@ int main(int ARGC, char* ARGV[])
 	v = NULL;
 	print("decode and check tojson\n");
 	char jsonbuf2[1024] = {0};
-	v = decode(&ujsbp);
+	v = decode(ujsbp);
 	tojson(jsonbuf2, v);
 	assert( strcmp(jsonbuf2, TOJSON_OUTPUT) == 0 );
 	ujvalue_release(&v);

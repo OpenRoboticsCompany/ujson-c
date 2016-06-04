@@ -70,7 +70,7 @@ int main(int argc, char* argv[])
 		//while (i < n) printf("\\x%02X", buffer[i++]);
 		//printf("\n");
 		buf = (uint8_t*)buffer;
-		decodedv = decode(&buf);
+		decodedv = decode(buf);
 		//tojson_with_types(buffer, decodedv);
 		//printf("%s\n", buffer);
 		ujdump(decodedv);
@@ -86,7 +86,7 @@ int main(int argc, char* argv[])
 		ujvalue_release(&decodedv);
 		decodedv = NULL;
 		buf = (uint8_t*)buffer;
-		decodedv = decode(&buf);
+		decodedv = decode(buf);
 		ujdump(decodedv);
 		buf = (uint8_t*)buffer;
 		n = data(buf, decodedv);

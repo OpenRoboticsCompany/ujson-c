@@ -35,7 +35,7 @@
 
 uint16_t decode_arraylen(uint8_t** buf);
 uint16_t decode_objectlen(uint8_t** buf);
-ujvalue* decode(uint8_t** buf);
+ujvalue* decode(uint8_t* buf);
 
 #endif
 
