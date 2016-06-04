@@ -889,6 +889,24 @@ int main(int ARGC, char* ARGV[])
 	print("tojson_with_types()\n");
 	tojson_with_types(jsonbuf, v);
 	assert( strcmp(jsonbuf, TOJSON_WITH_TYPES_OUTPUT) == 0 );
+
+	/************************************** decode-encode-decode round trip (dep on tojson above) *******/
+
+	print("decode-encode-decode round trip\n");
+	uint8_t ujsbuf[1024] = {0};
+	uint8_t* ujsbp = ujsbuf;
+	int encsize;
+	print("encoded size\n");
+	encsize = encode(ujsbuf, v);
+	assert( encsize == 0x87 );
+	ujvalue_release(&v);
+	v = NULL;
+	print("decode and check tojson\n");
+	char jsonbuf2[1024] = {0};
+	v = decode(&ujsbp);
+	tojson(jsonbuf2, v);
+	assert( strcmp(jsonbuf2, TOJSON_OUTPUT) == 0 );
+	ujvalue_release(&v);
 	}
 
 	// TODO: more tests!
