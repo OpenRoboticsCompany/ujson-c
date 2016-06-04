@@ -28,7 +28,7 @@
   */
 
 #include "ujson-endian.h"
-#include "movebytes.h"
+#include "ujson-movebytes.h"
 #include "ujson-data.h"
 
 // you'll probably never use these bool_foo; included for structural symmetry

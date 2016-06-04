@@ -33,7 +33,7 @@
   */
 
 #include "ujson-endian.h"
-#include "movebytes.h"
+#include "ujson-movebytes.h"
 #include "ujsizes.h"
 #include "schematags.h"
 #include "ujson-extract.h"

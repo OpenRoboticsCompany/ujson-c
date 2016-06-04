@@ -30,7 +30,7 @@
   */
 
 #include "ujson-endian.h"
-#include "movebytes.h"
+#include "ujson-movebytes.h"
 #include "ujson-extract.h"
 
 // you'll probably never use these bool and null extracts; included for structural symmetry

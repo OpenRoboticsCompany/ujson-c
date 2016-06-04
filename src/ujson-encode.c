@@ -28,7 +28,7 @@
   */
 
 #include "ujson-endian.h"
-#include "movebytes.h"
+#include "ujson-movebytes.h"
 #include "ujson-encode.h"
 
 void encode_bool(uint8_t** nextbuf, uint8_t val)

@@ -22,18 +22,15 @@
   * Part of ujson-c - Implements microjson in C - see ujson.org
   * and https://github.com/aaronkondziela/ujson-c/
   *
-  * movebytes.c
-  * Copies from one buffer to another.
-  * This is a common target for hardware-specific optimization. Tweak to suit your
-  * specific embodiment of ujson-c
+  * ujson-movebytes.h
   *
   */
 
-#include <string.h>
-#include "movebytes.h"
+#ifndef _UJ_MOVEBYTES_H
+#define _UJ_MOVEBYTES_H
 
-inline void movebytes(uint8_t* to, uint8_t* from, uint16_t n)
-{
-	//while (n--) to[n] = from[n];
-	memcpy(to, from, (size_t)n);
-}
+#include <stdint.h>
+
+void movebytes(uint8_t* to, uint8_t* from, uint16_t n);
+
+#endif
