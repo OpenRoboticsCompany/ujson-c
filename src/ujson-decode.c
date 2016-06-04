@@ -115,7 +115,7 @@ uint16_t decode_objectlen(uint8_t** buf)
 	return n >> 1;
 }
 
-
+// TODO wrap decode so it takes *buf
 ujvalue* decode(uint8_t** buf)
 {
 	uint8_t t;

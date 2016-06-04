@@ -10,12 +10,12 @@ TESTS=ujson-tests
 _TESTSSRC=ujson-tests.c
 
 # Header file dependencies (TODO not used right now)
-_DEPS=ujson-tojson.h ujson-dump.h ujson-object.h ujson-array.h ujson-value.h ujson-types.h ujson-string.h ujson-hash.h ujson-encode.h ujson-extract.h ujson-data.h ujson-decode.h hexdump.h ujson-endian.h udp.h schematags.h ujsizes.h ujson-movebytes.h
+_DEPS=ujson-format.h ujson-tojson.h ujson-dump.h ujson-object.h ujson-array.h ujson-value.h ujson-types.h ujson-string.h ujson-hash.h ujson-encode.h ujson-extract.h ujson-data.h ujson-decode.h hexdump.h ujson-endian.h udp.h schematags.h ujsizes.h ujson-movebytes.h
 IDIR=inc
 DEPS=$(pasubst %,$(IDIR)/%,$(_DEPS))
 
 # List of source files, excluding the EXE and TESTS runnables above
-_SOURCES=ujson-tojson.c ujson-dump.c ujson-object.c ujson-array.c ujson-value.c ujson-string.c ujson-hash.c ujson-encode.c ujson-extract.c ujson-data.c ujson-decode.c hexdump.c udp.c ujson-endian.c ujson-movebytes.c
+_SOURCES=ujson-format.c ujson-tojson.c ujson-dump.c ujson-object.c ujson-array.c ujson-value.c ujson-string.c ujson-hash.c ujson-encode.c ujson-extract.c ujson-data.c ujson-decode.c hexdump.c udp.c ujson-endian.c ujson-movebytes.c
 SDIR=src
 SOURCES=$(patsubst %,$(SDIR)/%,$(_SOURCES))
 EXESRC=$(patsubst %,$(SDIR)/%,$(_EXESRC))

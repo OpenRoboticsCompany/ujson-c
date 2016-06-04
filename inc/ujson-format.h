@@ -22,35 +22,17 @@
   * Part of ujson-c - Implements microjson in C - see ujson.org
   * and https://github.com/aaronkondziela/ujson-c/
   *
-  * schematags.h
-  * Defines for the various schema data type tags used in encoded ujson
-  * and ujson schemas
+  * ujson-format.h
   *
   */
 
-#ifndef _UJSON_SCHEMATAGS_H
-#define _UJSON_SCHEMATAGS_H
+#ifndef _UJ_FORMAT_H
+#define _UJ_FORMAT_H
 
-enum schematags {
-	uj_bool_tag       = 'b',
-	uj_bool_true_tag  = 't',
-	uj_bool_false_tag = 'f',
-	uj_null_tag       = 'n',
-	uj_uint8_tag      = 'C',
-	uj_int8_tag       = 'c',
-	uj_uint16_tag     = 'W',
-	uj_int16_tag      = 'w',
-	uj_uint32_tag     = 'I',
-	uj_int32_tag      = 'i',
-	uj_uint64_tag     = 'Q',
-	uj_int64_tag      = 'q',
-	uj_string_tag     = 's',
-	uj_float_tag      = 'd',
-	uj_double_tag     = 'D',
-	uj_array_tag      = 'a',
-	uj_object_tag     = 'o'
-};
+#include <stdint.h>
+#include "ujson-value.h"
 
-typedef enum schematags schematag;
+uint16_t format(uint8_t* buf, ujvalue* v);
 
 #endif
+

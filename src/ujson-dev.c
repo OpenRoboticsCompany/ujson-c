@@ -74,6 +74,11 @@ int main(int argc, char* argv[])
 		//tojson_with_types(buffer, decodedv);
 		//printf("%s\n", buffer);
 		ujdump(decodedv);
+		buf = (uint8_t*)buffer;
+		memset(buffer, 0, 65536);
+		n = format(buf, decodedv);
+		printf("%s\n",buffer);
+
 		memset(buffer, '\0', 65536);
 		n = 0;
 		n = encode(buffer, decodedv);
