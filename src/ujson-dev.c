@@ -57,23 +57,35 @@ int main(int argc, char* argv[])
 
 	#define BUFLEN 2048
 	char buffer[BUFLEN] = {0};
-
+	ujvalue* decodedv;
 	while(1) {
-		printf("Listening for udp...\n");
 		int n, i;
 		unsigned char buffer[65536];
+		uint8_t* buf;
+		printf("Listening for udp...\n");
 		n = rec(buffer, 65536);
 		printf("recevied %u bytes\n",n);
+		hexdump(buffer, n);
 		i = 0;
-		while (i < n) printf("\\x%02X", buffer[i++]);
-		printf("\n");
-		ujvalue* decodedv;
-		uint8_t* buf = (uint8_t*)buffer;
+		//while (i < n) printf("\\x%02X", buffer[i++]);
+		//printf("\n");
+		buf = (uint8_t*)buffer;
 		decodedv = decode(&buf);
-		tojson_with_types(buffer, decodedv);
-		printf("%s\n", buffer);
+		//tojson_with_types(buffer, decodedv);
+		//printf("%s\n", buffer);
 		ujdump(decodedv);
+		memset(buffer, '\0', 65536);
+		n = 0;
+		n = encode(buffer, decodedv);
+		hexdump(buffer, n);
+		ujvalue_release(&decodedv);
+		decodedv = NULL;
+		buf = (uint8_t*)buffer;
+		decodedv = decode(&buf);
+		ujdump(decodedv);
+		printf("---\n");
 	}
+
 	return 0;
 }
 

@@ -135,4 +135,99 @@ void encode_double(uint8_t** nextbuf, double val)
 	(*nextbuf) += 9;
 }
 
+// _encode_size and _encode_string could be used from the data_* funcs, but
+// having them here avoids the need to bring in that whole file which you
+// probably aren't using (either inlining schemas, or not)
 
+static void _encode_size(uint8_t* buf, uint16_t val)
+{
+	val = htoj16(val);
+	movebytes(buf, (uint8_t*)&val, 2);
+}
+
+static void _encode_string(uint8_t** buf, ujstring* str)
+{
+	_encode_size(*buf, str->length);
+	(*buf) += 2;
+	movebytes(*buf, str->data, str->length);
+	(*buf) += str->length;
+}
+
+static void _encode(uint8_t** buf, ujvalue* v, int i)
+{
+	uint16_t n;
+	uint8_t* sizefield;
+	switch(v->type) {
+		case uj_true:
+			encode_bool(buf, 1);
+			break;
+		case uj_false:
+			encode_bool(buf, 0);
+			break;
+		case uj_null:
+			encode_null(buf);
+			break;
+		case uj_number:
+			switch(v->numbertype) {
+				case uj_uint8:
+					encode_uint8(buf, v->data_as.uint8);
+					break;
+				case uj_int8:
+					encode_int8(buf, v->data_as.int8);
+					break;
+				case uj_uint16:
+					encode_uint16(buf, v->data_as.uint16);
+					break;
+				case uj_int16:
+					encode_int16(buf, v->data_as.int16);
+					break;
+				case uj_uint32:
+					encode_uint32(buf, v->data_as.uint32);
+					break;
+				case uj_int32:
+					encode_int32(buf, v->data_as.int32);
+					break;
+				case uj_uint64:
+					encode_uint64(buf, v->data_as.uint64);
+					break;
+				case uj_int64:
+					encode_int64(buf, v->data_as.int64);
+					break;
+				case uj_float:
+					encode_float(buf, v->data_as.f);
+					break;
+				case uj_double:
+					encode_double(buf, v->data_as.d);
+					break;
+			}
+			break;
+		case uj_string:
+			encode_string(buf, (char*)v->data_as.string->data);
+			break;
+		case uj_array:
+			*((*buf)++) = 'a';
+			sizefield = *buf;
+			(*buf) += 2;
+			for (n = 0; n < array_length(v->data_as.array); n++) _encode(buf, v->data_as.array->values[n], i+1);
+			_encode_size(sizefield, (uint16_t)((*buf) - sizefield - 2));
+			break;
+		case uj_object:
+			*((*buf)++) = 'o';
+			sizefield = *buf;
+			(*buf) += 2;
+			for (n = 0; n < v->data_as.object->size; n++) {
+				_encode_string(buf, (ujstring*)v->data_as.object->data[n*2]);
+				_encode(buf, v->data_as.object->data[n*2+1], i+1);
+			}
+			_encode_size(sizefield, (uint16_t)((*buf) - sizefield - 2));
+			break;
+	}
+}
+
+uint16_t encode(uint8_t* buf, ujvalue* v)
+{
+	uint8_t* bufstart;
+	bufstart = buf;
+	_encode(&buf, v, 0);
+	return (uint16_t)(buf - bufstart);
+}

@@ -32,10 +32,10 @@
 #define _UJ_ENCODE_H
 
 #include <stdint.h>
+#include "ujson-value.h"
 
 void encode_bool(uint8_t** nextbuf, uint8_t val);
 void encode_null(uint8_t** nextbuf);
-
 void encode_uint8(uint8_t** nextbuf, uint8_t val);
 void encode_int8(uint8_t** nextbuf, uint8_t val);
 void encode_uint16(uint8_t** nextbuf, uint16_t val);
@@ -44,10 +44,9 @@ void encode_uint32(uint8_t** nextbuf, uint32_t val);
 void encode_int32(uint8_t** nextbuf, int32_t val);
 void encode_uint64(uint8_t** nextbuf, uint64_t val);
 void encode_int64(uint8_t** nextbuf, int64_t val);
-
 void encode_string(uint8_t** nextbuf, char* str);
-
 void encode_float(uint8_t** nextbuf, float val);
 void encode_double(uint8_t** nextbuf, double val);
+uint16_t encode(uint8_t* buf, ujvalue* v);
 
 #endif
