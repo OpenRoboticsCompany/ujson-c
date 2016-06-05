@@ -266,17 +266,22 @@ int main(int ARGC, char* ARGV[])
 	encode_int64(&nextbuf, (int64_t)0x8000000000000001);
 	assert( buffers_match(but, bot, 9) );
 
+	{
 	print("encode_string()\n");
+	ujstring* s;
 	zero(but, BUFFER_LENGTH);
 	nextbuf = but;
 	#define TEST_STRING "my god, it's full of strings!"
 	#define TEST_STRING_LEN 32
 	bot = (uint8_t*)"s\x00\x1D" TEST_STRING;
-	encode_string(&nextbuf, (char*)TEST_STRING);
+	s = string_from((uint8_t*)TEST_STRING);
+	encode_string(&nextbuf, s);
 	assert( buffers_match(but, bot, TEST_STRING_LEN) );
+	string_release(&s);
 	#undef TEST_STRING
 	#undef TEST_STRING_LEN
-	
+	}
+
 	print("Note: floating-point tests presently are only valid for current build target arch.\n");
 	#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
 		print("Byte order is little endian\n");

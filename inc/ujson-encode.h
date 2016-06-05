@@ -44,7 +44,7 @@ void encode_uint32(uint8_t** nextbuf, uint32_t val);
 void encode_int32(uint8_t** nextbuf, int32_t val);
 void encode_uint64(uint8_t** nextbuf, uint64_t val);
 void encode_int64(uint8_t** nextbuf, int64_t val);
-void encode_string(uint8_t** nextbuf, char* str);
+void encode_string(uint8_t** nextbuf, ujstring* str);
 void encode_float(uint8_t** nextbuf, float val);
 void encode_double(uint8_t** nextbuf, double val);
 uint16_t encode(uint8_t* buf, ujvalue* v);

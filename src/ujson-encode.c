@@ -105,19 +105,13 @@ void encode_int64(uint8_t** nextbuf, int64_t val)
 	(*nextbuf) += 9;
 }
 
-// TODO clean up
-void encode_string(uint8_t** nextbuf, char* str)
+void encode_string(uint8_t** nextbuf, ujstring* str)
 {
-	uint16_t len = 0, len2 = 0;
-	while (str[len++]);
-	len--;
-	len2 = len;
+	uint16_t len = htoj16(str->length);
 	(*nextbuf)[0] = 's';
-	movebytes( &((*nextbuf)[3]), (uint8_t*)str, len );
-	len = htoj16(len);
-	(*nextbuf)[1] = ((uint8_t*)&len)[0];
-	(*nextbuf)[2] = ((uint8_t*)&len)[1];
-	(*nextbuf) += 3 + len2;
+	movebytes( &((*nextbuf)[1]), (uint8_t*)&len, 2);
+	movebytes( &((*nextbuf)[3]), str->data, str->length );
+	(*nextbuf) += 3 + str->length;
 }
 
 void encode_float(uint8_t** nextbuf, float val)
@@ -136,17 +130,13 @@ void encode_double(uint8_t** nextbuf, double val)
 	(*nextbuf) += 9;
 }
 
-// _encode_size and _encode_string could be used from the data_* funcs, but
-// having them here avoids the need to bring in that whole file which you
-// probably aren't using (either inlining schemas, or not)
-
 static void _encode_size(uint8_t* buf, uint16_t val)
 {
 	val = htoj16(val);
 	movebytes(buf, (uint8_t*)&val, 2);
 }
 
-static void _encode_string(uint8_t** buf, ujstring* str)
+static void _encode_keystring(uint8_t** buf, ujstring* str)
 {
 	_encode_size(*buf, str->length);
 	(*buf) += 2;
@@ -203,7 +193,7 @@ static void _encode(uint8_t** buf, ujvalue* v, int i)
 			}
 			break;
 		case uj_string:
-			encode_string(buf, (char*)v->data_as.string->data);
+			encode_string(buf, v->data_as.string);
 			break;
 		case uj_array:
 			*((*buf)++) = 'a';
@@ -217,7 +207,7 @@ static void _encode(uint8_t** buf, ujvalue* v, int i)
 			sizefield = *buf;
 			(*buf) += 2;
 			for (n = 0; n < v->data_as.object->size; n++) {
-				_encode_string(buf, (ujstring*)v->data_as.object->data[n*2]);
+				_encode_keystring(buf, (ujstring*)v->data_as.object->data[n*2]);
 				_encode(buf, v->data_as.object->data[n*2+1], i+1);
 			}
 			_encode_size(sizefield, (uint16_t)((*buf) - sizefield - 2));
