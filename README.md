@@ -5,10 +5,6 @@ This is a C library implementing the microjson protocol, a simple way to send bo
 structured and unstructured data to and from microcontrollers. For more information
 on the microjson protocol, see the [Open Robotics Company ujson git repository](https://github.com/OpenRoboticsCompany/ujson) on GitHub, and <http://ujson.org>
 
-**PLEASE NOTE**
-
-_This is incomplete code_ - Do not use until finalized!
-
 Copyright & License
 -------------------
 
