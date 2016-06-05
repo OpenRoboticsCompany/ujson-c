@@ -58,6 +58,24 @@ int main(int argc, char* argv[])
 	#define BUFLEN 2048
 	char buffer[BUFLEN] = {0};
 	ujvalue* decodedv;
+
+	uint8_t* a = "\x00\x03\x01\x02\x03";
+	uint8_t* s = "accc";
+
+	decodedv = extract(a, s);
+	ujdump(decodedv);
+	ujvalue_release(&decodedv);
+
+	a = "\x00\x0e\x00\x04\x61\x73\x64\x66\x01\x00\x04\x71\x77\x65\x72\x02";
+	s = "occ";
+
+	decodedv = extract(a, s);
+	ujdump(decodedv);
+	ujvalue_release(&decodedv);
+
+	uint8_t dat[1024];
+	uint8_t schema[1024];
+
 	while(1) {
 		int n, i;
 		unsigned char buffer[65536];
@@ -71,9 +89,8 @@ int main(int argc, char* argv[])
 		//printf("\n");
 		buf = (uint8_t*)buffer;
 		decodedv = decode(buf);
-		//tojson_with_types(buffer, decodedv);
-		//printf("%s\n", buffer);
 		ujdump(decodedv);
+
 		buf = (uint8_t*)buffer;
 		memset(buffer, 0, 65536);
 		n = format(buf, decodedv);
@@ -85,12 +102,26 @@ int main(int argc, char* argv[])
 		hexdump(buffer, n);
 		ujvalue_release(&decodedv);
 		decodedv = NULL;
+
 		buf = (uint8_t*)buffer;
 		decodedv = decode(buf);
 		ujdump(decodedv);
-		buf = (uint8_t*)buffer;
-		n = data(buf, decodedv);
-		hexdump(buffer, n);
+
+		n = data(dat, decodedv);
+		hexdump(dat, n);
+		i = 0;
+		while (i < n) printf("\\x%02X", dat[i++]);
+		printf("\n");
+		
+		n = format(schema, decodedv);
+		printf("%s\n",schema);
+
+		ujvalue_release(&decodedv);
+		decodedv = extract(dat, schema);
+
+		ujdump(decodedv);
+		ujvalue_release(&decodedv);
+
 		printf("---\n");
 	}
 

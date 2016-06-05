@@ -93,6 +93,7 @@ static void _format(uint8_t** buf, ujvalue* v, int i)
 			for (n = 0; n < v->data_as.object->size; n++) _format(buf, v->data_as.object->data[n*2+1], i+1);
 			break;
 	}
+	if (i==0) *((*buf)++) = 0;
 }
 
 uint16_t format(uint8_t* buf, ujvalue* v)

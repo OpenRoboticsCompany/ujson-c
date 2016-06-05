@@ -30,11 +30,9 @@
 #define _UJ_EXTRACT_H
 
 #include <stdint.h>
+#include "ujson-value.h"
 
-void extract_bool_true(uint8_t** nextbuf, uint8_t* val);
-void extract_bool_false(uint8_t** nextbuf, uint8_t* val);
-void extract_null(uint8_t** nextbuf, uint8_t* val);
-
+void extract_bool(uint8_t** nextbuf, uint8_t* val);
 void extract_uint8(uint8_t** nextbuf, uint8_t* val);
 void extract_int8(uint8_t** nextbuf, int8_t* val);
 void extract_uint16(uint8_t** nextbuf, uint16_t* val);
@@ -43,10 +41,9 @@ void extract_uint32(uint8_t** nextbuf, uint32_t* val);
 void extract_int32(uint8_t** nextbuf, int32_t* val);
 void extract_uint64(uint8_t** nextbuf, uint64_t* val);
 void extract_int64(uint8_t** nextbuf, int64_t* val);
-
 void extract_string(uint8_t** nextbuf, uint8_t* str);
-
 void extract_float(uint8_t** nextbuf, float* val);
 void extract_double(uint8_t** nextbuf, double* val);
+ujvalue* extract(uint8_t* buf, uint8_t* schema);
 
 #endif

@@ -311,20 +311,18 @@ int main(int ARGC, char* ARGV[])
 
 	print("Testing extract_* functions...\n");
 
-	print("extract_bool_true()\n");
+	print("extract_bool()\n");
 	bot = (uint8_t*)"t\xAA\xAA";
-	nextbuf = bot + 1;
-	u8a = 1;
+	u8a = uj_true;
 	u8b = 0;
-	extract_bool_true(&nextbuf, &u8b);
+	extract_bool(&bot, &u8b);
 	assert( u8a == u8b );
 
-	print("extract_bool_false()\n");
+	print("extract_bool()\n");
 	bot = (uint8_t*)"f\xAA\xAA";
-	nextbuf = bot + 1;
-	u8a = 0;
+	u8a = uj_false;
 	u8b = 1;
-	extract_bool_false(&nextbuf, &u8b);
+	extract_bool(&bot, &u8b);
 	assert( u8a == u8b );
 
 	print("extract_uint8() for 0x7f\n");
@@ -483,6 +481,17 @@ int main(int ARGC, char* ARGV[])
 	extract_double(&nextbuf, &db);
 	assert( da == db );
 
+	print("extract()\n");
+	{
+	ujvalue* v;
+	#define EXTRACTED "[\"hello\",true,123/int8,[5678/int16,null,\"world\",[5/int8,6/int8,7/int8],{\"nested arr\":[1/int8,2/int8,3/int8],\"string key\":\"spectacular\",\"nested obj\":{\"yay\":69/int8},\"key one\":42/int8}],123456789123456705438416896.00000000000000000/double,1.233999968/float,555/int16,false]"
+	bot = (uint8_t*)"\x00\x73\x00\x05\x68\x65\x6C\x6C\x6F\x74\x7B\x00\x59\x16\x2E\x6E\x00\x05\x77\x6F\x72\x6C\x64\x00\x03\x05\x06\x07\x00\x48\x00\x0A\x6E\x65\x73\x74\x65\x64\x20\x61\x72\x72\x00\x03\x01\x02\x03\x00\x0A\x73\x74\x72\x69\x6E\x67\x20\x6B\x65\x79\x00\x0B\x73\x70\x65\x63\x74\x61\x63\x75\x6C\x61\x72\x00\x0A\x6E\x65\x73\x74\x65\x64\x20\x6F\x62\x6A\x00\x06\x00\x03\x79\x61\x79\x45\x00\x07\x6B\x65\x79\x20\x6F\x6E\x65\x2A\x45\x59\x87\xBF\x7C\xB8\xEC\x63\x3F\x9D\xF3\xB6\x02\x2B\x66";
+	#define SCHEMA "asbcawnsacccoacccsoccDdwb"
+	v = extract(bot, (uint8_t*)SCHEMA);
+	char tojsonbuf[1024] = {0};
+	tojson_with_types(tojsonbuf, v);
+	assert( strcmp(tojsonbuf, EXTRACTED) == 0 );
+	}
 	/********************** str tests ************/
 
 	print("ujson-string\n");
