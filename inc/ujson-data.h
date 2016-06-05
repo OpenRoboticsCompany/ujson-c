@@ -42,7 +42,7 @@ void data_uint32(uint8_t** nextbuf, uint32_t val);
 void data_int32(uint8_t** nextbuf, int32_t val);
 void data_uint64(uint8_t** nextbuf, uint64_t val);
 void data_int64(uint8_t** nextbuf, int64_t val);
-void data_string(uint8_t** nextbuf, char* str);
+void data_string(uint8_t** nextbuf, ujstring* str);
 void data_float(uint8_t** nextbuf, float val);
 void data_double(uint8_t** nextbuf, double val);
 uint16_t data(uint8_t* buf, ujvalue* v);

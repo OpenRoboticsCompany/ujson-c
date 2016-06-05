@@ -98,18 +98,12 @@ void data_int64(uint8_t** nextbuf, int64_t val)
 	(*nextbuf) += 8;
 }
 
-// TODO clean up
-void data_string(uint8_t** nextbuf, char* str)
+void data_string(uint8_t** nextbuf, ujstring* str)
 {
-	uint16_t len = 0, len2 = 0;
-	while (str[len++]);
-	len--;
-	len2 = len;
-	movebytes( &((*nextbuf)[2]), (uint8_t*)str, len );
-	len = htoj16(len);
-	(*nextbuf)[0] = ((uint8_t*)&len)[0];
-	(*nextbuf)[1] = ((uint8_t*)&len)[1];
-	(*nextbuf) += 3 + len2;
+	uint16_t len = htoj16(str->length);
+	movebytes( &((*nextbuf)[2]), str->data, str->length );
+	movebytes( *nextbuf, (uint8_t*)&len, 2);
+	(*nextbuf) += 2 + str->length;
 }
 
 void data_float(uint8_t** nextbuf, float val)
@@ -131,14 +125,6 @@ static void _data_size(uint8_t* buf, uint16_t val)
 {
 	val = htoj16(val);
 	movebytes(buf, (uint8_t*)&val, 2);
-}
-
-static void _data_string(uint8_t** buf, ujstring* str)
-{
-	_data_size(*buf, str->length);
-	(*buf) += 2;
-	movebytes(*buf, str->data, str->length);
-	(*buf) += str->length;
 }
 
 static void _data(uint8_t** buf, ujvalue* v, int i)
@@ -190,7 +176,7 @@ static void _data(uint8_t** buf, ujvalue* v, int i)
 			}
 			break;
 		case uj_string:
-			data_string(buf, (char*)v->data_as.string->data);
+			data_string(buf, v->data_as.string);
 			break;
 		case uj_array:
 			sizefield = *buf;
@@ -202,7 +188,7 @@ static void _data(uint8_t** buf, ujvalue* v, int i)
 			sizefield = *buf;
 			(*buf) += 2;
 			for (n = 0; n < v->data_as.object->size; n++) {
-				_data_string(buf, (ujstring*)v->data_as.object->data[n*2]);
+				data_string(buf, (ujstring*)v->data_as.object->data[n*2]);
 				_data(buf, v->data_as.object->data[n*2+1], i+1);
 			}
 			_data_size(sizefield, (uint16_t)((*buf) - sizefield - 2));
