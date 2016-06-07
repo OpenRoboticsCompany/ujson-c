@@ -51,6 +51,11 @@ static void _escaped_strcpy(char** buf, uint8_t* ujstringdata)
 static void _tojson(char** buf, ujvalue* v, int i, uint8_t opts)
 {
 	uint16_t n;
+	if (v == NULL) {
+		memcpy(*buf, "null", 4);
+		(*buf) += 4;
+		return;
+	}
 	switch(v->type) {
 		case uj_true:
 			memcpy(*buf, "true", 4);
