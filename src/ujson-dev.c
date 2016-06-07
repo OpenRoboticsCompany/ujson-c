@@ -49,11 +49,21 @@
 #include "ujson-object.h"
 #include "ujson-tojson.h"
 #include "ujson-dump.h"
+#include "ujson-fromjson.h"
 #include <assert.h>
 
 int main(int argc, char* argv[])
 {
 	printf("\n\n*********************\nRunning ujson dev rig.\n");
+
+	ujvalue* vv;
+	FILE* fp;
+	fp = fopen("test.json", "r");
+	vv = fromjson(fp);
+	fclose(fp);
+	ujdump(vv);
+
+	return 0;
 
 	#define BUFLEN 2048
 	char buffer[BUFLEN] = {0};
