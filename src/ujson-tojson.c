@@ -42,8 +42,50 @@ static void _escaped_strcpy(char** buf, uint8_t* ujstringdata)
 	uint16_t n = 0;
 	if (ujstringdata[0]) *((*buf)++) = '"';
 	while (ujstringdata[n]) {
-		if (ujstringdata[n] == (uint8_t)'"') *((*buf)++) = '\\';
-		*((*buf)++) = (char)ujstringdata[n++];
+		switch (ujstringdata[n]) {
+			case '"':
+			case '\\':
+			case '\x00': case '\x01': case '\x02': case '\x03':
+			case '\x04': case '\x05': case '\x06': case '\x07': 
+			                                       case '\x0B':
+			                          case '\x0E': case '\x0F': 
+			case '\x10': case '\x11': case '\x12': case '\x13':
+			case '\x14': case '\x15': case '\x16': case '\x17': 
+			case '\x18': case '\x19': case '\x1A': case '\x1B':
+			case '\x1C': case '\x1D': case '\x1E': case '\x1F': 
+				*((*buf)++) = '\\';
+				*((*buf)++) = (char)ujstringdata[n++];
+				continue;
+			case '\b':
+				*((*buf)++) = '\\';
+				*((*buf)++) = 'b';
+				n++;
+				continue;
+			case '\f':
+				*((*buf)++) = '\\';
+				*((*buf)++) = 'f';
+				n++;
+				continue;
+			case '\n':
+				*((*buf)++) = '\\';
+				*((*buf)++) = 'n';
+				n++;
+				continue;
+			case '\r':
+				*((*buf)++) = '\\';
+				*((*buf)++) = 'r';
+				n++;
+				continue;
+			case '\t':
+				*((*buf)++) = '\\';
+				*((*buf)++) = 't';
+				n++;
+				continue;
+			// TODO full UTF-8 support
+			default:
+				*((*buf)++) = (char)ujstringdata[n++];
+				continue;
+		}
 	}
 	if (ujstringdata[0]) *((*buf)++) = '"';
 }
