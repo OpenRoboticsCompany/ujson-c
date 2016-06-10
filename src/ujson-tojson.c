@@ -37,6 +37,38 @@
 #include "ujson-value.h"
 #include "ujson-tojson.h"
 
+static void _unicode(char** buf, uint8_t* ujstringdata, uint16_t* n)
+{
+	uint16_t a, b, c, d;
+	uint32_t e;
+	if ((ujstringdata[*n] & 0xE0) == 0xC0) {
+		a = (ujstringdata[(*n)++] & 0x1F);
+		b = (ujstringdata[(*n)++] & 0x3F) | ((a & 0x03) << 6);
+		a = a >> 2;
+		(*buf) += sprintf(*buf, "\\u%2X%2X", a, b);
+	} else if ((ujstringdata[*n] & 0xF0) == 0xE0) {
+		a = (ujstringdata[(*n)++] & 0x0F);
+		b = (ujstringdata[(*n)++] & 0x3F);
+		c = (ujstringdata[(*n)++] & 0x3F);
+		a = (a << 4) | ((b & 0x3C) >> 2);
+		b = ((b & 0x03) << 6) | (c & 0x3F);
+		(*buf) += sprintf(*buf, "\\u%02X%02X", a, b);
+	} else if ((ujstringdata[*n] & 0xF8) == 0xF0) {
+		// oh snap! it's utf16 surrogate time!
+		a = (ujstringdata[(*n)++] & 0x07);
+		b = (ujstringdata[(*n)++] & 0x3F);
+		c = (ujstringdata[(*n)++] & 0x3F);
+		d = (ujstringdata[(*n)++] & 0x3F);
+		e = ((a & 0x07) << 18) | ((b & 0x3F) << 12) | ((c & 0x3F) << 6) | (d & 0x3F);
+		e -= 0x010000;
+		a = (e & 0x000FFC00) >> 10;
+		b = (e & 0x000003FF);
+		a += 0xD800;
+		b += 0xDC00;
+		(*buf) += sprintf(*buf, "\\u%04X\\u%04X", a, b);
+	}
+}
+
 static void _escaped_strcpy(char** buf, uint8_t* ujstringdata)
 {
 	uint16_t n = 0;
@@ -81,9 +113,12 @@ static void _escaped_strcpy(char** buf, uint8_t* ujstringdata)
 				*((*buf)++) = 't';
 				n++;
 				continue;
-			// TODO full UTF-8 support
 			default:
-				*((*buf)++) = (char)ujstringdata[n++];
+				if (ujstringdata[n] > 0x7F) {
+					_unicode(buf, ujstringdata, &n);
+				} else {
+					*((*buf)++) = (char)ujstringdata[n++];
+				}
 				continue;
 		}
 	}

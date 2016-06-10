@@ -181,10 +181,8 @@ static int unicode_decode(char* s, int* i)
 	char* tail;
 
 	for (j = 0; j < 4; j++) if ((buf[j]=next()) == EOF) return 1;
-	printf("read %s\n", buf);
 	a = strtoul(buf, &tail, 16);
 	if (tail==buf) return 1;
-	printf("a is %04x\n", a);
 
 	if (a >= 0 && a < 0x80) {
 		s[(*i)++] = (char)a;
@@ -205,6 +203,7 @@ static int unicode_decode(char* s, int* i)
 		a -= 0xD800;
 		b -= 0xDC00;
 		a = (a << 10) | b;
+		a += 0x010000;
 		s[(*i)++] = (char)(0xF0 | (a >> 18));
 		s[(*i)++] = (char)(0x80 | ((a >> 12) & 0x3F));
 		s[(*i)++] = (char)(0x80 | ((a >> 6) & 0x3F));
