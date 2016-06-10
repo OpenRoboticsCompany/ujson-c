@@ -65,7 +65,7 @@ ujstring* string_from(uint8_t* src_buf)
 {
 	uint16_t len;
 	ujstring* s;
-	len = string_findlen(src_buf);
+	len = strlen(src_buf);
 	s = string_allot(len);
 	s->length = len;
 	memcpy(s->data, src_buf, (size_t)len);
