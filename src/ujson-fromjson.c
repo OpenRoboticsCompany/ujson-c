@@ -89,7 +89,6 @@ static ujvalue* readnumber()
 	uint8_t isfloat = 0;
 	uint8_t issigned = 0;
 	uint8_t i = 0;
-
 	double d64;
 	uint64_t u64;
 	int64_t i64;
@@ -166,7 +165,6 @@ static ujvalue* readnumber()
 			v->data_as.uint64 = u64;
 		}
 	}
-
 	return v;
 
 LaFinDuMonde:
@@ -177,6 +175,41 @@ LaFinDuMonde:
 static int unicode_decode(char* s, int* i)
 {
 	// TODO write this
+	long int a = 0, b = 0;
+	int j = 0, c = 0;
+	char buf[5] = {0};
+	char* tail;
+
+	for (j = 0; j < 4; j++) if ((buf[j]=next()) == EOF) return 1;
+	printf("read %s\n", buf);
+	a = strtoul(buf, &tail, 16);
+	if (tail==buf) return 1;
+	printf("a is %04x\n", a);
+
+	if (a >= 0 && a < 0x80) {
+		s[(*i)++] = (char)a;
+	} else if (a >= 0x80 && a < 0x800) {
+		s[(*i)++] = (char)(0xC0 | (a >> 6));
+		s[(*i)++] = (char)(0x80 | (a & 0x3F));
+	} else if ((a >= 0x800 && a < 0xD800) || (a >= 0xE000 && a < 0x10000)) {
+		s[(*i)++] = (char)(0xE0 | (a >> 12));
+		s[(*i)++] = (char)(0x80 | ((a >> 6) & 0x3F));
+		s[(*i)++] = (char)(0x80 | (a & 0x3F));
+	} else if (a >= 0xD800 && a < 0xE000) {
+		// surrogate pair
+		if ((c=next()) != '\\') return 1;
+		if ((c=next()) != 'u') return 1;
+		for (j = 0; j < 4; j++) if ((buf[j]=next()) == EOF) return 1;
+		b = strtoul(buf, &tail, 16);
+		if (tail==buf) return 1;
+		a -= 0xD800;
+		b -= 0xDC00;
+		a = (a << 10) | b;
+		s[(*i)++] = (char)(0xF0 | (a >> 18));
+		s[(*i)++] = (char)(0x80 | ((a >> 12) & 0x3F));
+		s[(*i)++] = (char)(0x80 | ((a >> 6) & 0x3F));
+		s[(*i)++] = (char)(0x80 | (a & 0x3F));
+	}
 	return 0;
 }
 
@@ -244,7 +277,7 @@ static ujvalue* readstring()
 					s[i++] = '\t';
 					continue;
 				case 'u':
-					if (!unicode_decode(s, &i)) goto LaFinDuMonde;
+					if (unicode_decode(s, &i)) goto LaFinDuMonde;
 					continue;
 				default:
 					continue;
