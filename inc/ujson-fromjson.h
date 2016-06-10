@@ -26,12 +26,27 @@
   *
   */
 
-#ifdef _UJ_FROMJSON_H
+#ifndef _UJ_FROMJSON_H
 #define _UJ_FROMJSON_H
 
 #include <stdint.h>
 #include <stdio.h>
 #include "ujson-value.h"
+#include "ujson-string.h"
+
+typedef struct ujtmpa ujtmpa;
+typedef struct ujtmpo ujtmpo;
+
+struct ujtmpa {
+	ujvalue* v;
+	ujtmpa* next;
+};
+
+struct ujtmpo {
+	ujstring* k;
+	ujvalue* v;
+	ujtmpo* next;
+};
 
 ujvalue* fromjson(FILE* fp);
 

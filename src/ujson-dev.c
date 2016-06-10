@@ -62,7 +62,7 @@ int main(int argc, char* argv[])
 	vv = fromjson(fp);
 	fclose(fp);
 	ujdump(vv);
-
+	ujvalue_release(&vv);
 	return 0;
 
 	#define BUFLEN 2048

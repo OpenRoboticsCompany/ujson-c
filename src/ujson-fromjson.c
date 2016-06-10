@@ -23,7 +23,8 @@
   * and https://github.com/aaronkondziela/ujson-c/
   *
   * ujson-fromjson.c
-  * Parses JSON into a ujvalue
+  * Parses JSON into a ujvalue. Assumes if we are reading JSON text, that
+  * we are running a larger system that isn't very tightly resource-constrained.
   *
   */
 
@@ -33,12 +34,16 @@
 
 #include "ujson-value.h"
 #include "ujson-types.h"
+#include "ujson-string.h"
+#include "ujson-array.h"
+#include "ujson-object.h"
 #include "ujson-fromjson.h"
 
 #define UJ_FROMJSON_MAXSTRINGSIZE 1024
 #define UJ_FROMJSON_NUMBUFSIZE 25
 
 FILE* f;
+static ujvalue* readvalue();
 
 static int next()
 {
@@ -54,7 +59,7 @@ static int skip(uint8_t n)
 	return c;
 }
 
-static void skipnumber()
+static int skipnumber()
 {
 	int c = 0;
 	while (1) {
@@ -64,12 +69,12 @@ static void skipnumber()
 			case 'A': case 'B': case 'C': case 'D': case 'E': case 'F': case 'X':
 			case 'a': case 'b': case 'c': case 'd':           case 'f': case 'x':
 			case '.': case '-': case '+': case 'e':
-				break;
+				continue;
 			case EOF:
-				return;
+				return 1;
 			default:
-				ungetc(c,f);
-				return;
+				if (ungetc(c,f)==EOF) return 1;
+				return 0;
 		}
 	}
 }
@@ -114,8 +119,7 @@ static ujvalue* readnumber()
 				break;
 		}
 	}
-	// consume rest of too-long number if present
-	skipnumber();
+	if (skipnumber()) goto LaFinDuMonde;
 
 	v->type = uj_number;
 
@@ -170,19 +174,246 @@ LaFinDuMonde:
 	return NULL;
 }
 
+static int unicode_decode(char* s, int* i)
+{
+	// TODO write this
+	return 0;
+}
+
+static int skipstring()
+{
+	int c, e = 0;
+	while ((c = next()) != EOF) {
+		if (e) {
+			switch (c) {
+				case 'u':
+					for (e = 4; e > 0; e--) if (next()==EOF) return 1;
+					continue;
+				default:
+					e = 0;
+					continue;
+			}
+		}
+		switch (c) {
+			case '\\':
+				e = 1;
+				continue;
+			case '"':
+				return 0;
+		}
+	}
+	return 1;
+}
+
 static ujvalue* readstring()
 {
 	ujvalue* v = ujvalue_new();
-	char strbuf[UJ_FROMJSON_MAXSTRINGSIZE + 1] = {0};
+	char s[UJ_FROMJSON_MAXSTRINGSIZE + 1] = {0};
+	int c, i = 0, e = 0;
 
-	// TODO here next
+	while ((c = next()) != EOF && i < UJ_FROMJSON_MAXSTRINGSIZE) {
+		if (e) {
+			e = 0;
+			switch (c) {
+				case '"':
+				case '\\':
+				case '/':
+				case '\x00': case '\x01': case '\x02': case '\x03':
+				case '\x04': case '\x05': case '\x06': case '\x07': 
+				case '\x08': case '\x09': case '\x0A': case '\x0B':
+				case '\x0C': case '\x0D': case '\x0E': case '\x0F': 
+				case '\x10': case '\x11': case '\x12': case '\x13':
+				case '\x14': case '\x15': case '\x16': case '\x17': 
+				case '\x18': case '\x19': case '\x1A': case '\x1B':
+				case '\x1C': case '\x1D': case '\x1E': case '\x1F': 
+					s[i++] = (char)c;
+					continue;
+				case 'b':
+					s[i++] = '\b';
+					continue;
+				case 'f':
+					s[i++] = '\f';
+					continue;
+				case 'n':
+					s[i++] = '\n';
+					continue;
+				case 'r':
+					s[i++] = '\r';
+					continue;
+				case 't':
+					s[i++] = '\t';
+					continue;
+				case 'u':
+					if (!unicode_decode(s, &i)) goto LaFinDuMonde;
+					continue;
+				default:
+					continue;
+			}
+		}
+		switch (c) {
+			case '\\':
+				e = 1;
+				continue;
+			case '"':
+				goto Done;
+			default:
+				s[i++] = (char)c;
+		}
+	}
 
+Done:
+	if (c != '"' && c != EOF)
+		if (skipstring()) goto LaFinDuMonde;
+
+	v->type = uj_string;
+	v->data_as.string = string_from((uint8_t*)s);
 	return v;
 
 LaFinDuMonde:
 	ujvalue_release(&v);
 	return NULL;
 }
+
+static void ujtmpa_push(ujtmpa** head, ujvalue* v)
+{
+	if (*head==NULL) {
+		*head = calloc(1, sizeof(ujtmpa));
+		(*head)->v = v;
+		return;
+	}
+	ujtmpa* cur = *head;
+	while (cur->next) cur = cur->next;
+	cur->next = calloc(1, sizeof(ujtmpa));
+	cur->next->v = v;
+}
+
+static ujvalue* ujtmpa_get(ujtmpa* l, int i)
+{
+	while (i--) l = l->next;
+	return l->v;
+}
+
+static void ujtmpa_release(ujtmpa** l, int chain)
+{
+	ujtmpa* cur = *l;
+	ujtmpa* next;
+	while (cur) {
+		next = cur->next;
+		if (chain) ujvalue_release(&cur->v);
+		free(cur);
+		cur = next;
+	}
+	*l = NULL;
+}
+
+static ujvalue* readarray()
+{
+	ujtmpa* list = NULL;
+	ujvalue* v;
+	int c, i = 0;
+	while ((c = next()) != ']') {
+		if (c==EOF) goto LaFinDuMonde;
+		if (ungetc(c,f)==EOF) goto LaFinDuMonde;
+		if ((v=readvalue())==NULL) goto LaFinDuMonde;
+		switch (c=next()) {
+			case ',':
+				break;
+			case ']':
+				if (ungetc(c,f)==EOF) goto LaFinDuMonde;
+				break;
+			case EOF:
+			default:
+				goto LaFinDuMonde;
+		}
+		ujtmpa_push(&list, v);
+		i++;
+	}
+	v = ujvalue_new();
+	v->type = uj_array;
+	v->data_as.array = array_allot(i);
+	c = 0;
+	while (c < i) array_push(v->data_as.array, ujtmpa_get(list, c++));
+	ujtmpa_release(&list, 0);
+	return v;
+
+LaFinDuMonde:
+	ujtmpa_release(&list, 1);
+	return NULL;
+}
+
+static void ujtmpo_push(ujtmpo** head, ujstring* k, ujvalue* v)
+{
+	if (*head==NULL) {
+		*head = calloc(1, sizeof(ujtmpo));
+		(*head)->k = k;
+		(*head)->v = v;
+		return;
+	}
+	ujtmpo* cur = *head;
+	while (cur->next) cur = cur->next;
+	cur->next = calloc(1, sizeof(ujtmpo));
+	cur->next->k = k;
+	cur->next->v = v;
+}
+
+static ujtmpo* ujtmpo_get(ujtmpo* l, int i)
+{
+	while (i--) l = l->next;
+	return l;
+}
+
+static void ujtmpo_release(ujtmpo** l, int chain)
+{
+	ujtmpo* cur = *l;
+	ujtmpo* next;
+	while (cur) {
+		next = cur->next;
+		if (chain) string_release(&cur->k), ujvalue_release(&cur->v);
+		free(cur);
+		cur = next;
+	}
+	*l = NULL;
+}
+
+static ujvalue* readobject()
+{
+	ujtmpo* list = NULL;
+	ujstring* k;
+	ujvalue* v;
+	int c, i = 0;
+	while ((c = next()) != '}') {
+		if (c==EOF) goto LaFinDuMonde;
+		if (ungetc(c,f)==EOF) goto LaFinDuMonde;
+		if ((v=readvalue())==NULL) goto LaFinDuMonde;
+		k = string_from(v->data_as.string->data);
+		ujvalue_release(&v);
+		if ((c=next()) != ':') goto LaFinDuMonde;
+		if ((v=readvalue())==NULL) goto LaFinDuMonde;
+		switch (c=next()) {
+			case ',':
+				break;
+			case '}':
+				if (ungetc(c,f)==EOF) goto LaFinDuMonde;
+				break;
+			case EOF:
+			default:
+				goto LaFinDuMonde;
+		}
+		ujtmpo_push(&list, k, v);
+		i++;
+	}
+	v = ujvalue_new();
+	v->type = uj_object;
+	v->data_as.object = object_allot(i);
+	while (i--) object_set(v->data_as.object, ujtmpo_get(list,i)->k, ujtmpo_get(list,i)->v);
+	ujtmpo_release(&list, 0);
+	return v;
+
+LaFinDuMonde:
+	ujtmpo_release(&list, 1);
+	return NULL;
+}
+
 
 static ujvalue* readvalue()
 {
@@ -193,8 +424,10 @@ static ujvalue* readvalue()
 			return NULL;
 			break;
 		case '{':
+			v = readobject();
 			break;
 		case '[':
+			v = readarray();
 			break;
 		case '0': case '1': case '2': case '3': case '4':
 		case '5': case '6': case '7': case '8': case '9':
@@ -203,7 +436,6 @@ static ujvalue* readvalue()
 			v = readnumber();
 			break;
 		case '"':
-			if (ungetc(c, f)==EOF) return NULL;
 			v = readstring();
 			break;
 		case 't':
