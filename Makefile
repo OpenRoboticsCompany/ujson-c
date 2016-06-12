@@ -5,6 +5,9 @@
 EXE=ujson-dev
 _EXESRC=ujson-dev.c
 
+UJ2J=uj2j
+_UJ2JSRC=uj2j.c
+
 # Created and run by make tests
 TESTS=ujson-tests
 _TESTSSRC=ujson-tests.c
@@ -19,6 +22,7 @@ _SOURCES=ujson-fromjson.c ujson-format.c ujson-tojson.c ujson-dump.c ujson-objec
 SDIR=src
 SOURCES=$(patsubst %,$(SDIR)/%,$(_SOURCES))
 EXESRC=$(patsubst %,$(SDIR)/%,$(_EXESRC))
+UJ2JSRC=$(patsubst %,$(SDIR)/%,$(_UJ2JSRC))
 TESTSSRC=$(patsubst %,$(SDIR)/%,$(_TESTSSRC))
 
 _OBJECTS=$(_SOURCES:.c=.o)
@@ -26,6 +30,7 @@ ODIR=obj
 $(shell mkdir -p $(ODIR) >/dev/null)
 OBJECTS=$(patsubst %,$(ODIR)/%,$(_OBJECTS))
 EXEOBJ=$(patsubst %,$(ODIR)/%,$(_EXESRC:.c=.o))
+UJ2JOBJ=$(patsubst %,$(ODIR)/%,$(_UJ2JSRC:.c=.o))
 TESTSOBJ=$(patsubst %,$(ODIR)/%,$(_TESTSSRC:.c=.o))
 
 _D=$(_OBJECTS:.o=.d) $(EXE).d $(TESTS).d
@@ -49,6 +54,9 @@ $(ODIR)/%.o: $(SDIR)/%.c
 	$(CC) $(DEPFLAGS) $(CFLAGS) -c $< -o $@
 	$(POSTCOMPILE)
 
+$(UJ2J): $(OBJECTS) $(UJ2JOBJ)
+	$(CC) $(LDFLAGS) $(OBJECTS) $(UJ2JOBJ) -o $@
+
 $(EXE): $(OBJECTS) $(EXEOBJ)
 	$(CC) $(LDFLAGS) $(OBJECTS) $(EXEOBJ) -o $@
 
@@ -57,6 +65,6 @@ tests: $(OBJECTS) $(TESTSOBJ)
 	./$(TESTS)
 
 .PHONY clean:
-	rm -f $(OBJECTS) $(EXE) $(EXEOBJ) $(TESTSOBJ) $(TESTS) $(D)
+	rm -f $(OBJECTS) $(EXE) $(EXEOBJ) $(UJ2J) $(UJ2JOBJ) $(TESTSOBJ) $(TESTS) $(D)
 
 -include $(D)
