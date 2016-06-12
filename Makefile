@@ -8,6 +8,9 @@ _EXESRC=ujson-dev.c
 UJ2J=uj2j
 _UJ2JSRC=uj2j.c
 
+J2UJ=j2uj
+_J2UJSRC=j2uj.c
+
 # Created and run by make tests
 TESTS=ujson-tests
 _TESTSSRC=ujson-tests.c
@@ -23,6 +26,7 @@ SDIR=src
 SOURCES=$(patsubst %,$(SDIR)/%,$(_SOURCES))
 EXESRC=$(patsubst %,$(SDIR)/%,$(_EXESRC))
 UJ2JSRC=$(patsubst %,$(SDIR)/%,$(_UJ2JSRC))
+J2UJSRC=$(patsubst %,$(SDIR)/%,$(_J2UJSRC))
 TESTSSRC=$(patsubst %,$(SDIR)/%,$(_TESTSSRC))
 
 _OBJECTS=$(_SOURCES:.c=.o)
@@ -31,6 +35,7 @@ $(shell mkdir -p $(ODIR) >/dev/null)
 OBJECTS=$(patsubst %,$(ODIR)/%,$(_OBJECTS))
 EXEOBJ=$(patsubst %,$(ODIR)/%,$(_EXESRC:.c=.o))
 UJ2JOBJ=$(patsubst %,$(ODIR)/%,$(_UJ2JSRC:.c=.o))
+J2UJOBJ=$(patsubst %,$(ODIR)/%,$(_J2UJSRC:.c=.o))
 TESTSOBJ=$(patsubst %,$(ODIR)/%,$(_TESTSSRC:.c=.o))
 
 _D=$(_OBJECTS:.o=.d) $(EXE).d $(TESTS).d
@@ -57,6 +62,9 @@ $(ODIR)/%.o: $(SDIR)/%.c
 $(UJ2J): $(OBJECTS) $(UJ2JOBJ)
 	$(CC) $(LDFLAGS) $(OBJECTS) $(UJ2JOBJ) -o $@
 
+$(J2UJ): $(OBJECTS) $(J2UJOBJ)
+	$(CC) $(LDFLAGS) $(OBJECTS) $(J2UJOBJ) -o $@
+
 $(EXE): $(OBJECTS) $(EXEOBJ)
 	$(CC) $(LDFLAGS) $(OBJECTS) $(EXEOBJ) -o $@
 
@@ -65,6 +73,6 @@ tests: $(OBJECTS) $(TESTSOBJ)
 	./$(TESTS)
 
 .PHONY clean:
-	rm -f $(OBJECTS) $(EXE) $(EXEOBJ) $(UJ2J) $(UJ2JOBJ) $(TESTSOBJ) $(TESTS) $(D)
+	rm -f $(OBJECTS) $(EXE) $(EXEOBJ) $(UJ2J) $(UJ2JOBJ) $(J2UJ) $(J2UJOBJ) $(TESTSOBJ) $(TESTS) $(D)
 
 -include $(D)
